@@ -26,9 +26,11 @@ def update_git():
     subprocess.run(["git", "push", "origin", "gh-pages"])
 
 if __name__ == '__main__':
-    period_seconds = 60
+    period_seconds = 10*60 # 10 minutes
 
-    prev_data = None
+    with open("data.json", "r") as prev_data_file:
+        prev_data = json.load(prev_data_file)
+
     time_start = time.time()
     while True:
         download_file()
@@ -38,7 +40,7 @@ if __name__ == '__main__':
             if int(data[0]['Indexed']) != int(prev_data[0]['Indexed']):
                 # update data on server
                 print("New data")
-                with open("data.json") as out_file:
+                with open("data.json", "w") as out_file:
                     json.dump(data, out_file, indent=2)
                 update_git()
 
