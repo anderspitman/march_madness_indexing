@@ -1,10 +1,9 @@
 #! /usr/bin/env python
 
-from datetime import datetime 
 import time
-import os
 import csv
 import subprocess
+import json
 
 
 def download_file():
@@ -20,8 +19,13 @@ def process_file():
         print(data)
         return data
 
+def update_git():
+    subprocess.run(["git", "add", "data.json"])
+    subprocess.run(["git", "commit", "-m", "'Update data.json'"])
+    subprocess.run(["git", "checkout", "gh-pages"])
+    subprocess.run(["git", "push", "origin", "gh-pages"])
+
 if __name__ == '__main__':
-    os.environ["PATH"] += os.pathsep + os.getcwd()
     period_seconds = 60
 
     prev_data = None
@@ -31,8 +35,12 @@ if __name__ == '__main__':
         data = process_file()
 
         if prev_data is not None:
-            if data[0]['Indexed'] != prev_data[0]['Indexed']:
+            if int(data[0]['Indexed']) != int(prev_data[0]['Indexed']):
+                # update data on server
                 print("New data")
+                with open("data.json") as out_file:
+                    json.dump(data, out_file, indent=2)
+                update_git()
 
         prev_data = data
 
@@ -41,6 +49,10 @@ if __name__ == '__main__':
         print("elapsed: {}".format(elapsed))
 
         sleep_for = period_seconds - elapsed
-        print("sleep for: {}".format(sleep_for))
-        time.sleep(sleep_for)
+
+        if sleep_for > 0:
+            print("sleep for: {}".format(sleep_for))
+            time.sleep(sleep_for)
+        else:
+            print("Not sleeping")
         time_start = time.time()

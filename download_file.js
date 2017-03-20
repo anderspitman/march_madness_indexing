@@ -7,7 +7,7 @@ var x = require('casper').selectXPath;
 
 var auth;
 
-casper.options.waitTimeout = 20000;
+casper.options.waitTimeout = 60000;
 
 casper.start('https://indexing.familysearch.org/admin/unit.jsf');
 
