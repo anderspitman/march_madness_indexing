@@ -107,7 +107,7 @@
       var roundOne = selection.append("g")
           .attr("class", "round-one")
           .attr("transform", function(d, i) {
-            return svgTranslateString(width/4, 50);
+            return svgTranslateString(0, 50);
           })
 
       roundOne.append("text")
@@ -119,7 +119,7 @@
       roundOne.append("g")
           .attr("class", 'groups')
           .attr("transform", function(d, i) {
-            return svgTranslateString(190, 50);
+            return svgTranslateString(15, 50);
           })
           .attr("alignment-baseline", "middle")
         .selectAll(".faceoff")
