@@ -22,8 +22,7 @@ def process_file():
 def update_git():
     subprocess.run(["git", "add", "data.json"])
     subprocess.run(["git", "commit", "-m", "'Update data.json'"])
-    subprocess.run(["git", "checkout", "gh-pages"])
-    subprocess.run(["git", "push", "origin", "gh-pages"])
+    subprocess.run(["git", "push", "origin", "master"])
 
 if __name__ == '__main__':
     period_seconds = 10*60 # 10 minutes
