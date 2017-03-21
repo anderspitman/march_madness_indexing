@@ -37,7 +37,7 @@
     "san_marcos": "San Marcos",
     "horizon": "Horizon",
     "south_mountain": "South Mountain",
-    "towne_lake": "Town Lake",
+    "towne_lake": "Towne Lake",
     "pioneer": "Pioneer",
     "mission_bay": "Mission Bay",
     "mcclintock": "McClintock",
