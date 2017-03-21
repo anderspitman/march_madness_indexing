@@ -21,7 +21,7 @@ def process_file():
 
 def update_git():
     subprocess.run(["git", "add", "data.json"])
-    subprocess.run(["git", "commit", "-m", "'Update data.json'"])
+    subprocess.run(["git", "commit", "-m", "Automated - Update data.json"])
     subprocess.run(["git", "push", "origin", "master"])
 
 if __name__ == '__main__':
@@ -35,13 +35,11 @@ if __name__ == '__main__':
         download_file()
         data = process_file()
 
-        if prev_data is not None:
-            if int(data[0]['Indexed']) != int(prev_data[0]['Indexed']):
-                # update data on server
-                print("New data")
-                with open("data.json", "w") as out_file:
-                    json.dump(data, out_file, indent=2)
-                update_git()
+        if prev_data is not None and prev_data != data:
+            print("Data Change")
+            with open("data.json", "w") as out_file:
+                json.dump(data, out_file, indent=2)
+            update_git()
 
         prev_data = data
 

@@ -84,6 +84,32 @@
 
   function main(data) {
 
+    firebaseStuff();
+    makeCharts(data);
+
+  }
+
+  function firebaseStuff() {
+
+    var config = {
+      apiKey: "AIzaSyAkHMLIBu1BMxSSrv7jX_6wnbg2WnujlCg",
+      authDomain: "march-madness-indexing.firebaseapp.com",
+      databaseURL: "https://march-madness-indexing.firebaseio.com",
+      storageBucket: "march-madness-indexing.appspot.com",
+      messagingSenderId: "554642006729"
+    };
+    var firebaseApp = firebase.initializeApp(config);
+
+
+    var db = firebase.database().ref('mmi/');
+
+    db.on('value', function(snapshot) {
+      console.log(snapshot.val());
+    });
+  }
+
+  function makeCharts(data) {
+
     allData = transformData(data);
 
     console.log(allData);
