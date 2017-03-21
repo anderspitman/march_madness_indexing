@@ -68,26 +68,11 @@
     "southshore": 1.72
   };
 
-  d3.json("https://rawgit.com/anderspitman/march_madness_indexing_data/master/data.json", function(data) {
-    var data = data.map(function(record) {
-      record.Indexed = +record.Indexed;
-      record.Arbitrated = +record.Arbitrated;
-      record['Redo Batches'] = +record['Redo Batches'];
-      return record;
-    });
-
-    main(data);
-  });
 
   var allData;
   var width;
 
-  function main(data) {
-
-    firebaseStuff();
-    makeCharts(data);
-
-  }
+  firebaseStuff();
 
   function firebaseStuff() {
 
@@ -100,11 +85,11 @@
     };
     var firebaseApp = firebase.initializeApp(config);
 
+    firebase.database().ref().child('indexing_data').limitToLast(1).once('value')
+    .then(function(snapshot) {
+      var val = snapshot.val();
 
-    var db = firebase.database().ref('mmi/');
-
-    db.on('value', function(snapshot) {
-      console.log(snapshot.val());
+      makeCharts(getFirstItem(val));
     });
   }
 
@@ -227,6 +212,10 @@
 
   function svgTranslateString(x, y) {
     return "translate(" + x + "," + y + ")";
+  }
+
+  function getFirstItem(obj) {
+    return obj[Object.keys(obj)];
   }
 
 }(d3));

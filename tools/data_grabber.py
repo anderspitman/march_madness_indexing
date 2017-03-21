@@ -4,6 +4,7 @@ import time
 import csv
 import subprocess
 import json
+import pyrebase
 
 
 def download_file():
@@ -15,14 +16,31 @@ def process_file():
 
         data = []
         for record in reader:
-            data.append(record)
+            new_record = {
+                'Arbitrated': int(record['Arbitrated']),
+                'Indexed': int(record['Indexed']),
+                'Name': record['Name'],
+                'Redo Batches': int(record['Redo Batches']),
+            }
+            data.append(new_record)
         print(data)
         return data
 
-def update_git():
-    subprocess.run(["git", "add", "data.json"])
-    subprocess.run(["git", "commit", "-m", "Automated - Update data.json"])
-    subprocess.run(["git", "push", "origin", "master"])
+def update_database(data):
+    config = {
+        'apiKey': "AIzaSyAkHMLIBu1BMxSSrv7jX_6wnbg2WnujlCg",
+        'authDomain': "march-madness-indexing.firebaseapp.com",
+        'databaseURL': "https://march-madness-indexing.firebaseio.com",
+        'storageBucket': "march-madness-indexing.appspot.com",
+        'messagingSenderId': "554642006729",
+        'serviceAccount': "firebase-service-account-auth.json"
+    }
+
+    firebase = pyrebase.initialize_app(config)
+
+    db = firebase.database()
+
+    db.child("indexing_data").push(data)
 
 if __name__ == '__main__':
     period_seconds = 10*60 # 10 minutes
@@ -39,7 +57,7 @@ if __name__ == '__main__':
             print("Data Change")
             with open("data.json", "w") as out_file:
                 json.dump(data, out_file, indent=2)
-            update_git()
+            update_database(data)
 
         prev_data = data
 
