@@ -6,6 +6,18 @@ import subprocess
 import json
 import pyrebase
 
+unit_map = {
+    "Tempe Arizona YSA Stake": "full_stake",
+    "Horizon YSA Ward": "horizon",
+    "McClintock YSA Ward": "mcclintock",
+    "Mission Bay YSA Ward": "mission_bay",
+    "San Marcos YSA Ward": "san_marcos",
+    "South Mountain YSA Ward": "south_mountain",
+    "Towne Lake YSA Ward": "towne_lake",
+    "University YSA Ward": "university",
+    "Southshore YSA Ward": "southshore",
+    "Pioneer YSA Ward": "pioneer"
+}
 
 def download_file():
     subprocess.run(["casperjs", "download_file.js"])
@@ -14,7 +26,7 @@ def process_file():
     with open("data.csv", newline='') as csv_file:
         reader = csv.DictReader(csv_file)
 
-        data = []
+        data = {} 
         for record in reader:
             new_record = {
                 'Arbitrated': int(record['Arbitrated']),
@@ -22,7 +34,10 @@ def process_file():
                 'Name': record['Name'],
                 'Redo Batches': int(record['Redo Batches']),
             }
-            data.append(new_record)
+
+            for full_name in unit_map:
+                if full_name == record['Name']:
+                    data[unit_map[full_name]] = new_record
         print(data)
         return data
 
@@ -40,7 +55,8 @@ def update_database(data):
 
     db = firebase.database()
 
-    db.child("indexing_data").push(data)
+    db.child("indexing").push(data)
+
 
 if __name__ == '__main__':
     period_seconds = 10*60 # 10 minutes

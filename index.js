@@ -1,18 +1,5 @@
-(function(d3) {
+(function(d3, firebase) {
   "use strict";
-
-  var unitMap = {
-    "Tempe Arizona YSA Stake": "full_stake",
-    "Horizon YSA Ward": "horizon",
-    "McClintock YSA Ward": "mcclintock",
-    "Mission Bay YSA Ward": "mission_bay",
-    "San Marcos YSA Ward": "san_marcos",
-    "South Mountain YSA Ward": "south_mountain",
-    "Towne Lake YSA Ward": "towne_lake",
-    "University YSA Ward": "university",
-    "Southshore YSA Ward": "southshore",
-    "Pioneer YSA Ward": "pioneer"
-  };
 
   var roundOneData = [
     [
@@ -32,47 +19,13 @@
     ]
   ];
 
-  var displayNames = {
-    "university": "University",
-    "san_marcos": "San Marcos",
-    "horizon": "Horizon",
-    "south_mountain": "South Mountain",
-    "towne_lake": "Towne Lake",
-    "pioneer": "Pioneer",
-    "mission_bay": "Mission Bay",
-    "mcclintock": "McClintock",
-    "southshore": "Southshore"
-  };
-
-  var startCorrections = {
-    "university": 572,
-    "san_marcos": 83,
-    "horizon": 20,
-    "south_mountain": 0,
-    "towne_lake": 49,
-    "pioneer": 0,
-    "mission_bay": 778,
-    "mcclintock": 441,
-    "southshore": 0
-  };
-
-  var ratios = {
-    "university": 1.30,
-    "san_marcos": 1.34,
-    "horizon": 1.96,
-    "south_mountain": 1.55,
-    "towne_lake": 1.0,
-    "pioneer": 1.60,
-    "mission_bay": 1.46,
-    "mcclintock": 2.04,
-    "southshore": 1.72
-  };
-
 
   var allData;
   var width;
+  var wardInfo;
 
   firebaseStuff();
+
 
   function firebaseStuff() {
 
@@ -85,7 +38,15 @@
     };
     var firebaseApp = firebase.initializeApp(config);
 
-    firebase.database().ref().child('indexing_data').limitToLast(1).once('value')
+    var db = firebase.database();
+
+    db.ref().child('ward_information').once('value')
+    .then(function(snapshot) {
+
+      wardInfo = snapshot.val();
+
+      return db.ref().child('indexing').limitToLast(1).once('value');
+    })
     .then(function(snapshot) {
       var val = snapshot.val();
 
@@ -95,9 +56,7 @@
 
   function makeCharts(data) {
 
-    allData = transformData(data);
-
-    console.log(allData);
+    allData = data;
 
     var svg = d3.select('.container').append('svg')
         .style("width", "100%")
@@ -177,7 +136,7 @@
           .attr("dx", 15)
           .attr("dy", 5)
           .text(function(d) { 
-            return displayNames[d];
+            return wardInfo[d].display_name;
           });
 
       group.append("text")
@@ -185,7 +144,8 @@
           .attr("dy", 5)
           .text(function(d) { 
             if (allData[d] !== undefined) {
-              return Math.floor(ratios[d] * (allData[d].Indexed - startCorrections[d]));
+              return Math.floor(wardInfo[d].size_normalization_ratio *
+                (allData[d].Indexed - wardInfo[d].start_value));
             }
             else {
               return "0";
@@ -197,19 +157,6 @@
     return my;
   }
 
-  function transformData(data) {
-    var newData = {};
-
-
-    data.forEach(function(record) {
-      if (unitMap[record.Name] !== undefined) {
-        newData[unitMap[record.Name]] = record;
-      }
-    });
-
-    return newData;
-  }
-
   function svgTranslateString(x, y) {
     return "translate(" + x + "," + y + ")";
   }
@@ -218,4 +165,4 @@
     return obj[Object.keys(obj)];
   }
 
-}(d3));
+}(d3, firebase));
