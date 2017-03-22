@@ -58,6 +58,19 @@ casper.waitForSelector(downloadReportSelector, function() {
   this.download(url, 'data.csv');
 });
 
+downloadReport('data_test.csv');
+
+function downloadReport(casper, filename) {
+  var downloadReportSelector = x('//a[text()="Download Report"]');
+  casper.waitForSelector(downloadReportSelector, function() {
+    var url = casper.getElementAttribute(downloadReportSelector, 'href');
+    this.download(url, filename);
+  });
+}
+
+function downloadContributorStatistics(casper) {
+}
+
 //casper.then(function() {
 //  this.capture('screenshot.png');
 //});

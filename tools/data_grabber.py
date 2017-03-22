@@ -58,6 +58,12 @@ def update_database(data):
     db.child("indexing").push(data)
 
 
+def print_changes(prev_data, data):
+    print("Data Change")
+    for key in prev_data:
+        if prev_data[key] != data[key]:
+            print("  {} ===> {}".format(prev_data[key], data[key]))
+
 if __name__ == '__main__':
     period_seconds = 10*60 # 10 minutes
 
@@ -70,7 +76,9 @@ if __name__ == '__main__':
         data = process_file()
 
         if prev_data is not None and prev_data != data:
-            print("Data Change")
+
+            print_changes(prev_data, data)
+
             with open("data.json", "w") as out_file:
                 json.dump(data, out_file, indent=2)
             update_database(data)
