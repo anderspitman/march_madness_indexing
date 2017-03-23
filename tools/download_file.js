@@ -7,58 +7,72 @@ var x = require('casper').selectXPath;
 
 var auth;
 
-casper.options.waitTimeout = 60000;
+downloadStateMarchReport(casper);
+downloadContributorStatistics(casper);
 
-casper.start('https://indexing.familysearch.org/admin/unit.jsf');
 
-casper.then(function() {
-  var fs = require('fs');
-  auth = JSON.parse(fs.read('auth.json'));
-});
+function downloadStateMarchReport(casper) {
+  casper.options.waitTimeout = 60000;
 
-casper.then(function() {
-  this.sendKeys('input#userName', auth.username);
-});
+  casper.start('https://indexing.familysearch.org/admin/unit.jsf');
 
-casper.then(function() {
-  this.sendKeys('input#password', auth.password);
-});
+  casper.then(function() {
+    var fs = require('fs');
+    auth = JSON.parse(fs.read('auth.json'));
+  });
 
-casper.then(function() {
-  this.click(x('//input[@id="login"]'));
-});
+  casper.then(function() {
+    this.sendKeys('input#userName', auth.username);
+  });
 
-var reportsSelector = x('//a[text()="Reports"]');
-casper.waitForSelector(reportsSelector, function() {
-  this.click(reportsSelector);
-});
+  casper.then(function() {
+    this.sendKeys('input#password', auth.password);
+  });
 
-var timelineSelector = 'select[name="reports:_id101"]';
-casper.waitForSelector(timelineSelector, function() {
-  casper.selectOptionByValue(timelineSelector, 'report_type.monthly');
-});
+  casper.then(function() {
+    this.click(x('//input[@id="login"]'));
+  });
 
-var monthSelector = x('//select/option[@value="report_period.monthly_march"]');
-casper.waitForSelector(monthSelector, function() {
-  casper.selectOptionByValue('select[name="reports:_id104"]', 'report_period.monthly_march');
-});
+  var reportsSelector = x('//a[text()="Reports"]');
+  casper.waitForSelector(reportsSelector, function() {
+    this.click(reportsSelector);
+  });
 
-casper.then(function() {
-  casper.selectOptionByValue('select[name="reports:format"]', 'csv');
-});
+  var timelineSelector = 'select[name="reports:_id101"]';
+  casper.waitForSelector(timelineSelector, function() {
+    casper.selectOptionByValue(timelineSelector, 'report_type.monthly');
+  });
 
-var generateReportSelector = 'input[value="Generate Report"]';
-casper.waitForSelector(generateReportSelector, function() {
-  this.click(generateReportSelector);
-});
+  var monthSelector = x('//select/option[@value="report_period.monthly_march"]');
+  casper.waitForSelector(monthSelector, function() {
+    casper.selectOptionByValue('select[name="reports:_id104"]', 'report_period.monthly_march');
+  });
 
-var downloadReportSelector = x('//a[text()="Download Report"]');
-casper.waitForSelector(downloadReportSelector, function() {
-  var url = casper.getElementAttribute(downloadReportSelector, 'href');
-  this.download(url, 'data.csv');
-});
+  casper.then(function() {
+    casper.selectOptionByValue('select[name="reports:format"]', 'csv');
+  });
 
-downloadReport('data_test.csv');
+  generateReport(casper);
+
+  downloadReport(casper, 'data.csv');
+}
+
+function downloadContributorStatistics(casper) {
+  var statsSelector = 'select[name="reports:_id98"]';
+  casper.waitForSelector(statsSelector, function() {
+    casper.selectOptionByValue(statsSelector, 'UserStatisticsReport');
+  });
+
+  generateReport(casper);
+  downloadReport(casper, 'contributor_statistics.csv');
+}
+
+function generateReport(casper) {
+  var generateReportSelector = 'input[value="Generate Report"]';
+  casper.waitForSelector(generateReportSelector, function() {
+    this.click(generateReportSelector);
+  });
+}
 
 function downloadReport(casper, filename) {
   var downloadReportSelector = x('//a[text()="Download Report"]');
@@ -68,7 +82,7 @@ function downloadReport(casper, filename) {
   });
 }
 
-function downloadContributorStatistics(casper) {
+function selectContributorOption(casper) {
 }
 
 //casper.then(function() {
