@@ -2,19 +2,42 @@
 
   var firstRoundData = [
     [
-      { "name": "university", "x": 24, "y": 21 },
-      { "name": "san_marcos", "x": 0, "y": 0 },
-      { "name": "horizon", "x": 0, "y": 0 }
+      { "name": "university", "x": 8, "y": 10 },
+      { "name": "san_marcos", "x": 30, "y": 7 },
+      { "name": "horizon", "x": 51, "y": 10 }
     ],
     [
-      { "name": "south_mountain", "x": 0, "y": 0 },
-      { "name": "towne_lake", "x": 0, "y": 0 },
-      { "name": "pioneer", "x": 0, "y": 0 }
+      { "name": "south_mountain", "x": 72, "y": 10 },
+      { "name": "towne_lake", "x": 93, "y": 8 },
+      { "name": "pioneer", "x": 114, "y": 10 }
     ],
     [
-      { "name": "mission_bay", "x": 0, "y": 0 },
-      { "name": "mcclintock", "x": 0, "y": 0 },
-      { "name": "southshore", "x": 0, "y": 0 }
+      { "name": "mission_bay", "x": 136, "y": 10 },
+      { "name": "mcclintock", "x": 158, "y": 8 },
+      { "name": "southshore", "x": 180, "y": 10 }
+    ]
+  ];
+
+  var secondRoundData = [
+    [
+      { "name": "???", "x": 18, "y": 55 },
+      { "name": "???", "x": 56, "y": 52 }
+    ],
+    [
+      { "name": "???", "x": 81, "y": 54 },
+      { "name": "???", "x": 112, "y": 54 }
+    ],
+    [
+      { "name": "???", "x": 136, "y": 54 },
+      { "name": "???", "x": 180, "y": 55 }
+    ]
+  ];
+
+  var thirdRoundData = [
+    [
+      { "name": "???", "x": 38, "y": 108 },
+      { "name": "???", "x": 84, "y": 108 },
+      { "name": "???", "x": 123, "y": 111 }
     ]
   ];
 
@@ -107,6 +130,16 @@
         .datum(firstRoundData)
         .attr("class", "first-round")
         .call(firstRound.round("first"));
+
+    svg.append("g")
+        .datum(secondRoundData)
+        .attr("class", "second-round")
+        .call(firstRound.round("second"));
+
+    svg.append("g")
+        .datum(thirdRoundData)
+        .attr("class", "third-round")
+        .call(firstRound.round("third"));
   }
 
   function firstRoundChart() {
@@ -192,6 +225,7 @@
           .attr("x", width / 2)
           .attr("y", 6)
           .text(function(d) { 
+            if (d.name === "???") return "???";
             return wardInfo[d.name].display_name;
           });
 
@@ -201,6 +235,9 @@
           .attr("x", width / 2)
           .attr("y", 15)
           .text(function(d) { 
+
+            if (d.name === "???") return null;
+
             if (allData[d.name] !== undefined) {
               return Math.floor(wardInfo[d.name].size_normalization_ratio *
                 (allData[d.name].indexed - wardInfo[d.name].start_value));
