@@ -1,21 +1,20 @@
 (function(d3, firebase) {
-  "use strict";
 
-  var roundOneData = [
+  var firstRoundData = [
     [
-      "university",
-      "san_marcos",
-      "horizon"
+      { "name": "university", "x": 24, "y": 21 },
+      { "name": "san_marcos", "x": 0, "y": 0 },
+      { "name": "horizon", "x": 0, "y": 0 }
     ],
     [
-      "south_mountain",
-      "towne_lake",
-      "pioneer"
+      { "name": "south_mountain", "x": 0, "y": 0 },
+      { "name": "towne_lake", "x": 0, "y": 0 },
+      { "name": "pioneer", "x": 0, "y": 0 }
     ],
     [
-      "mission_bay",
-      "mcclintock",
-      "southshore"
+      { "name": "mission_bay", "x": 0, "y": 0 },
+      { "name": "mcclintock", "x": 0, "y": 0 },
+      { "name": "southshore", "x": 0, "y": 0 }
     ]
   ];
 
@@ -23,8 +22,17 @@
   var allData;
   var width;
   var wardInfo;
+  var treeXml;
 
-  firebaseStuff();
+  d3.xml("assets/tree-no-leaves.svg").mimeType("image/svg+xml").get(function(error, xml) {
+    if (error) throw error;
+    //document.querySelector(".container").appendChild(xml.documentElement);
+
+    treeXml = xml;
+
+    firebaseStuff();
+  });
+
 
 
   function firebaseStuff() {
@@ -59,46 +67,72 @@
     console.log("Processing data from:", data.timestamp);
     allData = data.units;
 
-    console.log(allData);
+    //console.log(allData);
 
-    var svg = d3.select('.container').append('svg')
-        .style("width", "100%")
-        .style("height", "100%");
+    //var svg = d3.select('.container').append('svg')
+    //    .attr("width", "100%")
+    //    .attr("height", "100%");
+
+    //svg.append("g")
+    //    .attr("class", "tree-container")
+    //    .node().appendChild(treeXml.documentElement);
+    
+    var container = d3.select('.container')
+      .append("g")
+        .attr("class", "tree-container")
+        .node().appendChild(treeXml.documentElement);
+
+
+    var svg = d3.select("svg")
+        .attr("width", "100%")
+        .attr("height", "100%");
+
+    //var tree = svg.select(".tree-container")
+    //  .select("svg")
+    //    .attr("width", "100%")
+    //    .attr("height", "100%");
+
+    //var svg = d3.select('svg')
+    //    .style("width", "100%")
+    //    .style("height", "100%");
 
     width = parseInt(svg.style("width"));
 
-    var roundOne = roundOneChart();
+    //var roundOne = roundOneChart();
+    //svg.call(roundOne);
+    
+    var firstRound = firstRoundChart();
 
-    svg.call(roundOne);
+    svg.append("g")
+        .datum(firstRoundData)
+        .attr("class", "first-round")
+        .call(firstRound.round("first"));
   }
 
-  function roundOneChart() {
+  function firstRoundChart() {
 
     var faceoff = faceoffChart();
+    var round;
 
     function my(selection) {
-      var roundOne = selection.append("g")
-          .attr("class", "round-one")
-          .attr("transform", function(d, i) {
-            return svgTranslateString(0, 50);
-          })
 
-      roundOne.append("text")
-          .attr("class", "title")
-          .attr("dx", 0)
-          .style("font-size", 36)
-        .text("Round One (Mon 3/20 to Sun 3/26)");
-
-      roundOne.append("g")
-          .attr("class", 'groups')
-          .attr("transform", function(d, i) {
-            return svgTranslateString(15, 50);
-          })
-          .attr("alignment-baseline", "middle")
-        .selectAll(".faceoff")
-          .data(roundOneData)
+      var cls = "faceoff-" + round + "-round";
+      selection.selectAll('.' + cls)
+          .data(function(d) { return d; })
         .enter()
-          .call(faceoff);
+          .call(faceoff.round(round));
+    }
+
+    my.data = function(value) {
+      if (!arguments.length) return data;
+      data = value;
+      return my;
+    }
+
+    my.round = function(value) {
+      if (!arguments.length) return round;
+      round = value;
+      return my;
     }
 
     return my;
@@ -106,50 +140,70 @@
 
   function faceoffChart() {
 
-    var ward = wardMaker();
+    var ward = wardChart();
+    var round;
 
     function my(selection) {
+
+      var cls = "faceoff-" + round + "-round";
+
       selection.append("g")
-          .attr("class", "faceoff")
-          .attr("transform", function(d, i) {
-            return svgTranslateString(0, i*200);
-          })
-        .selectAll(".ward")
+          .attr("class", cls)
+        .selectAll(".ward-" + round + "-round")
           .data(function(d) { return d; })
         .enter()
-        .call(ward);
+        .call(ward.round(round));
+    }
+
+    my.round = function(value) {
+      if (!arguments.length) return round;
+      round = value;
+      return my;
     }
 
     return my;
   }
 
-  function wardMaker() {
+  function wardChart() {
+
+    var round;
 
     function my(selection) {
       var group = selection.append("g")
-          .attr("transform", function(d, i) {
-            return svgTranslateString(0, i*30);
+          .attr("class", "ward-" + round + "-round")
+          .attr("transform", function(d) {
+            return svgTranslateString(d.x, d.y);
           });
 
-      group.append("circle")
-          .style("fill", "steelblue")
-          .attr("r", 10);
+      var width = 20;
+
+      group.append("rect")
+          .style("fill", "#279e33")
+          .attr("x", 0)
+          .attr("y", 0)
+          .attr("rx", 5)
+          .attr("ry", 5)
+          .attr("width", width)
+          .attr("height", 20);
 
       group.append("text")
-          .attr("dx", 15)
-          .attr("dy", 5)
+          .attr("font-size", 3)
+          .attr("text-anchor", "middle")
+          .attr("x", width / 2)
+          .attr("y", 6)
           .text(function(d) { 
-            return wardInfo[d].display_name;
+            return wardInfo[d.name].display_name;
           });
 
       group.append("text")
-          .attr("dx", 150)
-          .attr("dy", 5)
+          .attr("font-size", 7)
+          .attr("text-anchor", "middle")
+          .attr("x", width / 2)
+          .attr("y", 15)
           .text(function(d) { 
-            console.log(d);
-            if (allData[d] !== undefined) {
-              return Math.floor(wardInfo[d].size_normalization_ratio *
-                (allData[d].indexed - wardInfo[d].start_value));
+            if (allData[d.name] !== undefined) {
+              return Math.floor(wardInfo[d.name].size_normalization_ratio *
+                (allData[d.name].indexed - wardInfo[d.name].start_value));
             }
             else {
               return "0";
@@ -158,8 +212,102 @@
       
     }
 
+    my.round = function(value) {
+      if (!arguments.length) return round;
+      round = value;
+      return my;
+    }
+
     return my;
   }
+
+//  function roundOneChart() {
+//
+//    var faceoff = faceoffChart();
+//
+//    function my(selection) {
+//      var roundOne = selection.append("g")
+//          .attr("class", "round-one")
+//          .attr("transform", function(d, i) {
+//            return svgTranslateString(0, 50);
+//          })
+//
+//      roundOne.append("text")
+//          .attr("class", "title")
+//          .attr("dx", 0)
+//          .style("font-size", 36)
+//        .text("Round One (Mon 3/20 to Sun 3/26)");
+//
+//      roundOne.append("g")
+//          .attr("class", 'groups')
+//          .attr("transform", function(d, i) {
+//            return svgTranslateString(15, 50);
+//          })
+//          .attr("alignment-baseline", "middle")
+//        .selectAll(".faceoff")
+//          .data(firstRoundData)
+//        .enter()
+//          .call(faceoff);
+//    }
+//
+//    return my;
+//  }
+//
+//  function faceoffChart() {
+//
+//    var ward = wardChart();
+//
+//    function my(selection) {
+//      selection.append("g")
+//          .attr("class", "faceoff")
+//          .attr("transform", function(d, i) {
+//            return svgTranslateString(0, i*200);
+//          })
+//        .selectAll(".ward")
+//          .data(function(d) { return d; })
+//        .enter()
+//        .call(ward);
+//    }
+//
+//    return my;
+//  }
+//
+//  function wardChart() {
+//
+//    function my(selection) {
+//      var group = selection.append("g")
+//          .attr("transform", function(d, i) {
+//            return svgTranslateString(0, i*30);
+//          });
+//
+//      group.append("circle")
+//          .style("fill", "steelblue")
+//          .attr("r", 10);
+//
+//      group.append("text")
+//          .attr("dx", 15)
+//          .attr("dy", 5)
+//          .text(function(d) { 
+//            return wardInfo[d.name].display_name;
+//          });
+//
+//      group.append("text")
+//          .attr("dx", 150)
+//          .attr("dy", 5)
+//          .text(function(d) { 
+//            if (allData[d.name] !== undefined) {
+//              return Math.floor(wardInfo[d.name].size_normalization_ratio *
+//                (allData[d.name].indexed - wardInfo[d.name].start_value));
+//            }
+//            else {
+//              return "0";
+//            }
+//          });
+//      
+//    }
+//
+//    return my;
+//  }
 
   function svgTranslateString(x, y) {
     return "translate(" + x + "," + y + ")";
