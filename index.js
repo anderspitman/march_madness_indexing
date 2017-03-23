@@ -45,7 +45,7 @@
 
       wardInfo = snapshot.val();
 
-      return db.ref().child('indexing').limitToLast(1).once('value');
+      return db.ref().child('stake_and_ward_indexing').limitToLast(1).once('value');
     })
     .then(function(snapshot) {
       var val = snapshot.val();
@@ -56,7 +56,10 @@
 
   function makeCharts(data) {
 
-    allData = data;
+    console.log("Processing data from:", data.timestamp);
+    allData = data.units;
+
+    console.log(allData);
 
     var svg = d3.select('.container').append('svg')
         .style("width", "100%")
@@ -143,9 +146,10 @@
           .attr("dx", 150)
           .attr("dy", 5)
           .text(function(d) { 
+            console.log(d);
             if (allData[d] !== undefined) {
               return Math.floor(wardInfo[d].size_normalization_ratio *
-                (allData[d].Indexed - wardInfo[d].start_value));
+                (allData[d].indexed - wardInfo[d].start_value));
             }
             else {
               return "0";

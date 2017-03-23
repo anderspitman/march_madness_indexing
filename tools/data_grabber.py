@@ -37,18 +37,23 @@ def process_file():
     with open("data.csv", newline='') as csv_file:
         reader = csv.DictReader(csv_file)
 
-        data = {} 
+        data = {
+            'timestamp': get_arizona_timestamp(),
+            'units': {}
+        } 
         for record in reader:
             new_record = {
-                'Arbitrated': int(record['Arbitrated']),
-                'Indexed': int(record['Indexed']),
-                'Name': record['Name'],
-                'Redo Batches': int(record['Redo Batches']),
+                'arbitrated': int(record['Arbitrated']),
+                'indexed': int(record['Indexed']),
+                'unit_name': record['Name'],
+                'redo_batches': int(record['Redo Batches']),
             }
 
-            for full_name in unit_map:
-                if full_name == record['Name']:
-                    data[unit_map[full_name]] = new_record
+            unit_name = new_record['unit_name']
+            if unit_name in unit_map:
+                ward_key = unit_map[unit_name]
+                data['units'][ward_key] = new_record
+
         #pprint(data)
         return data
 
@@ -85,7 +90,7 @@ def process_contributor_file():
             #    if ward_name == record['ward_name']:
             #        data[unit_map[ward_name]] = new_record
 
-            ward_name = record['ward_name']
+            ward_name = new_record['ward_name']
             if ward_name in unit_map:
                 ward_key = unit_map[ward_name]
                 data['wards'].setdefault(ward_key, []).append(new_record)
@@ -99,7 +104,7 @@ def update_database(data):
 
     db = firebase.database()
 
-    db.child("indexing").push(data)
+    db.child("stake_and_ward_indexing").push(data)
 
 def update_database_contributors(data):
     firebase = pyrebase.initialize_app(firebase_config)
@@ -112,12 +117,12 @@ def update_database_contributors(data):
 def print_changes(prev_data, data):
     print("Data Change")
     print(get_arizona_timestamp())
-    for key in prev_data:
-        if prev_data[key] != data[key]:
+    for key in prev_data['units']:
+        if prev_data['units'][key] != data['units'][key]:
             print("<<<<<<<<<<<<<<<<<<<<")
-            pprint(prev_data[key])
+            pprint(prev_data['units'][key])
             print("====================")
-            pprint(data[key])
+            pprint(data['units'][key])
             print(">>>>>>>>>>>>>>>>>>>>")
 
 def print_contributor_changes(prev_data, data):
@@ -152,7 +157,7 @@ if __name__ == '__main__':
         data = process_file()
         contributor_data = process_contributor_file()
 
-        if prev_data is not None and prev_data != data:
+        if prev_data is not None and prev_data['units'] != data['units']:
 
             print_changes(prev_data, data)
 
@@ -164,7 +169,7 @@ if __name__ == '__main__':
 
 
         if (prev_data_contributors is not None and
-            prev_data_contributors != contributor_data):
+            prev_data_contributors['wards'] != contributor_data['wards']):
 
             print_contributor_changes(prev_data_contributors, contributor_data)
 
