@@ -291,7 +291,9 @@
     var data;
 
     function my(selection) {
+
       var totalRec = selection.append("g")
+          .attr("transform", svgTranslateString(0, 20))
           .attr("class", "total-records");
 
       // Calculate total indexed records
@@ -303,17 +305,48 @@
         });
       });
 
+      var oldRecord = 6970;
       totalRec.append("text")
           .attr("font-size", 16)
           .attr("font-weight", "bold")
-          .attr("x", 0)
-          .attr("y", 15)
-          .text("Total Records:");
+          .text("Stake Total:");
 
       totalRec.append("text")
-          .attr("x", 120)
-          .attr("y", 15)
+          .attr("y", 20)
+          .attr("font-size", 16)
+          .attr("font-weight", "bold")
           .text(total);
+
+      var prevRecord = selection.append("g")
+          .attr("transform", svgTranslateString(0, 70))
+          .attr("class", "previous-record")
+
+      prevRecord.append("text")
+          .attr("font-size", 16)
+          .attr("font-weight", "bold")
+          .attr("text-decoration", function(d) {
+            if (total > oldRecord) {
+              return "line-through";
+            }
+            else {
+              return null;
+            }
+          })
+          .text("Old Record (July 2016):");
+
+      prevRecord.append("text")
+          .attr("font-size", 16)
+          .attr("font-weight", "bold")
+          .attr("y", 20)
+          .attr("text-decoration", function(d) {
+            if (total > oldRecord) {
+              return "line-through";
+            }
+            else {
+              return null;
+            }
+          })
+          .text(oldRecord);
 
       var leaders = computeLeaderboard(data);
 
@@ -321,7 +354,7 @@
 
       var leaderboard = selection.append("g")
           .attr("class", "leaderboard")
-          .attr("transform", svgTranslateString(0, 70));
+          .attr("transform", svgTranslateString(0, 120));
 
       leaderboard.append("text")
           .attr("font-size", 16)
@@ -329,7 +362,7 @@
           //.attr("text-anchor", "middle")
           .attr("text-decoration", "underline")
           //.attr("x", 70)
-          .text("Leaderboard (#Records)");
+          .text("Leaderboard");
 
       leaderboard.append("g")
           .attr("class", "leaders")
