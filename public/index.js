@@ -88,13 +88,15 @@
     console.log("Processing data from:", data.timestamp);
     allData = data.units;
 
-    var container = d3.select('#svg-container')
-      .append("g")
-        .attr("class", "tree-container")
+    var container = d3.select('.svg-container')
+      //.append("g")
+      //  .attr("class", "tree-container")
         .node().appendChild(treeXml.documentElement);
 
 
     var svg = d3.select("svg")
+        //.attr("width", "200px")
+        //.attr("height", "200px");
         .attr("width", "100%")
         .attr("height", "100%");
 
