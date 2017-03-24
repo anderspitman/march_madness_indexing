@@ -2,54 +2,52 @@
 
   var firstRoundData = [
     [
-      { "name": "university", "x": 8, "y": 10 },
-      { "name": "san_marcos", "x": 30, "y": 7 },
-      { "name": "horizon", "x": 51, "y": 10 }
+      { "name": "university", "x": 54, "y": 101 },
+      { "name": "san_marcos", "x": 151, "y": 95 },
+      { "name": "horizon", "x": 213, "y": 121 }
     ],
     [
-      { "name": "south_mountain", "x": 72, "y": 10 },
-      { "name": "towne_lake", "x": 93, "y": 8 },
-      { "name": "pioneer", "x": 114, "y": 10 }
+      { "name": "south_mountain", "x": 291, "y": 31 },
+      { "name": "towne_lake", "x": 365, "y": 22 },
+      { "name": "pioneer", "x": 452, "y": 30 }
     ],
     [
-      { "name": "mission_bay", "x": 136, "y": 10 },
-      { "name": "mcclintock", "x": 158, "y": 8 },
-      { "name": "southshore", "x": 180, "y": 10 }
+      { "name": "mission_bay", "x": 569, "y": 88 },
+      { "name": "mcclintock", "x": 650, "y": 62 },
+      { "name": "southshore", "x": 719, "y": 110 }
     ]
   ];
 
   var secondRoundData = [
     [
-      { "name": "???", "x": 18, "y": 55 },
-      { "name": "???", "x": 56, "y": 52 }
+      { "name": "???", "x": 103, "y": 265 },
+      { "name": "???", "x": 63, "y": 335 }
     ],
     [
-      { "name": "???", "x": 81, "y": 54 },
-      { "name": "???", "x": 112, "y": 54 }
+      { "name": "???", "x": 335, "y": 192 },
+      { "name": "???", "x": 430, "y": 188 }
     ],
     [
-      { "name": "???", "x": 136, "y": 54 },
-      { "name": "???", "x": 180, "y": 55 }
+      { "name": "???", "x": 664, "y": 268 },
+      { "name": "???", "x": 576, "y": 209 }
     ]
   ];
 
   var thirdRoundData = [
     [
-      { "name": "???", "x": 38, "y": 108 },
-      { "name": "???", "x": 84, "y": 108 },
-      { "name": "???", "x": 123, "y": 111 }
+      { "name": "???", "x": 282, "y": 365 },
+      { "name": "???", "x": 364, "y": 323 },
+      { "name": "???", "x": 446, "y": 345 }
     ]
   ];
-
 
   var allData;
   var width;
   var wardInfo;
   var treeXml;
 
-  d3.xml("assets/tree-no-leaves.svg").mimeType("image/svg+xml").get(function(error, xml) {
+  d3.xml("assets/tree.svg").mimeType("image/svg+xml").get(function(error, xml) {
     if (error) throw error;
-    //document.querySelector(".container").appendChild(xml.documentElement);
 
     treeXml = xml;
 
@@ -90,17 +88,7 @@
     console.log("Processing data from:", data.timestamp);
     allData = data.units;
 
-    //console.log(allData);
-
-    //var svg = d3.select('.container').append('svg')
-    //    .attr("width", "100%")
-    //    .attr("height", "100%");
-
-    //svg.append("g")
-    //    .attr("class", "tree-container")
-    //    .node().appendChild(treeXml.documentElement);
-    
-    var container = d3.select('.container')
+    var container = d3.select('#svg-container')
       .append("g")
         .attr("class", "tree-container")
         .node().appendChild(treeXml.documentElement);
@@ -110,20 +98,8 @@
         .attr("width", "100%")
         .attr("height", "100%");
 
-    //var tree = svg.select(".tree-container")
-    //  .select("svg")
-    //    .attr("width", "100%")
-    //    .attr("height", "100%");
-
-    //var svg = d3.select('svg')
-    //    .style("width", "100%")
-    //    .style("height", "100%");
-
     width = parseInt(svg.style("width"));
 
-    //var roundOne = roundOneChart();
-    //svg.call(roundOne);
-    
     var firstRound = firstRoundChart();
 
     svg.append("g")
@@ -207,8 +183,14 @@
           .attr("transform", function(d) {
             return svgTranslateString(d.x, d.y);
           });
+          //.call(d3.drag()
+          //  .on("start", dragstarted)
+          //  .on("drag", dragged)
+          //  .on("end", dragended));
 
-      var width = 20;
+
+      var width = 54;
+      var height = width;
 
       group.append("rect")
           .style("fill", "#279e33")
@@ -217,23 +199,25 @@
           .attr("rx", 5)
           .attr("ry", 5)
           .attr("width", width)
-          .attr("height", 20);
+          .attr("height", height);
 
       group.append("text")
-          .attr("font-size", 3)
+          .attr("font-size", 8)
+          .attr("font-weight", "bold")
           .attr("text-anchor", "middle")
           .attr("x", width / 2)
-          .attr("y", 6)
+          .attr("y", 15)
           .text(function(d) { 
             if (d.name === "???") return "???";
             return wardInfo[d.name].display_name;
           });
 
       group.append("text")
-          .attr("font-size", 7)
+          .attr("font-size", 20)
+          .attr("font-weight", "bold")
           .attr("text-anchor", "middle")
           .attr("x", width / 2)
-          .attr("y", 15)
+          .attr("y", 40)
           .text(function(d) { 
 
             if (d.name === "???") return null;
@@ -246,7 +230,21 @@
               return "0";
             }
           });
-      
+
+      function dragstarted(d) {
+        d3.select(this).raise().classed("active", true);
+      }
+
+      function dragged(d) {
+        //d3.select(this).attr("cx", d.x = d3.event.x).attr("cy", d.y = d3.event.y);
+        d3.select(this).attr("transform",
+          svgTranslateString(d.x = d3.event.x, d.y = d3.event.y));
+      }
+
+      function dragended(d) {
+        d3.select(this).classed("active", false);
+      }
+
     }
 
     my.round = function(value) {
@@ -257,94 +255,6 @@
 
     return my;
   }
-
-//  function roundOneChart() {
-//
-//    var faceoff = faceoffChart();
-//
-//    function my(selection) {
-//      var roundOne = selection.append("g")
-//          .attr("class", "round-one")
-//          .attr("transform", function(d, i) {
-//            return svgTranslateString(0, 50);
-//          })
-//
-//      roundOne.append("text")
-//          .attr("class", "title")
-//          .attr("dx", 0)
-//          .style("font-size", 36)
-//        .text("Round One (Mon 3/20 to Sun 3/26)");
-//
-//      roundOne.append("g")
-//          .attr("class", 'groups')
-//          .attr("transform", function(d, i) {
-//            return svgTranslateString(15, 50);
-//          })
-//          .attr("alignment-baseline", "middle")
-//        .selectAll(".faceoff")
-//          .data(firstRoundData)
-//        .enter()
-//          .call(faceoff);
-//    }
-//
-//    return my;
-//  }
-//
-//  function faceoffChart() {
-//
-//    var ward = wardChart();
-//
-//    function my(selection) {
-//      selection.append("g")
-//          .attr("class", "faceoff")
-//          .attr("transform", function(d, i) {
-//            return svgTranslateString(0, i*200);
-//          })
-//        .selectAll(".ward")
-//          .data(function(d) { return d; })
-//        .enter()
-//        .call(ward);
-//    }
-//
-//    return my;
-//  }
-//
-//  function wardChart() {
-//
-//    function my(selection) {
-//      var group = selection.append("g")
-//          .attr("transform", function(d, i) {
-//            return svgTranslateString(0, i*30);
-//          });
-//
-//      group.append("circle")
-//          .style("fill", "steelblue")
-//          .attr("r", 10);
-//
-//      group.append("text")
-//          .attr("dx", 15)
-//          .attr("dy", 5)
-//          .text(function(d) { 
-//            return wardInfo[d.name].display_name;
-//          });
-//
-//      group.append("text")
-//          .attr("dx", 150)
-//          .attr("dy", 5)
-//          .text(function(d) { 
-//            if (allData[d.name] !== undefined) {
-//              return Math.floor(wardInfo[d.name].size_normalization_ratio *
-//                (allData[d.name].indexed - wardInfo[d.name].start_value));
-//            }
-//            else {
-//              return "0";
-//            }
-//          });
-//      
-//    }
-//
-//    return my;
-//  }
 
   function svgTranslateString(x, y) {
     return "translate(" + x + "," + y + ")";
