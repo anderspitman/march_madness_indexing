@@ -18,7 +18,11 @@ body {
     //min-height: 300px;
     //height: var(--content-height);
     max-height: 550px;
-    //background-color: red;
+}
+
+.chart-container {
+    width: 300px;
+    background-color: blue;
 }
 
 .stats-container {
@@ -31,10 +35,6 @@ body {
 .note-container {
     //max-height: var(--note-height);
     //background-color: green;
-}
-
-.header {
-  min-height: var(--header-height);
 }
 
 .footer {

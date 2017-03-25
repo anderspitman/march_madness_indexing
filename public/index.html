@@ -6,11 +6,6 @@
   </head>
 
   <body>
-    <!--
-    <div class='container header'>
-      <a class='btn btn-primary' href='https://www.facebook.com/events/1130658830396486/'>Facebook Event</a>
-    </div>
-    -->
     <div class='container'>
       <nav class='navbar navbar-default'>
         <div class='container-fluid'>
@@ -42,17 +37,30 @@
           </div>
         </div>
       </nav>
-      <div class='tree-container'>
-      </div>
-      <div class='note-container'>
-        <p>
-          Note: Values below represent the number records indexed any time in March.
-          This is not the same as the official scoring in the tree,
-          which is adjusted based on ward attendance and only includes records
-          indexed during the activity.
-        </p>
-      </div>
-      <div class='stats-container'>
+      <ul id="mainTabs" class="nav nav-tabs">
+        <li role="presentation" class="active"><a href="#tree">Tree</a></li>
+        <li role="presentation"><a href="#leaderboard">Leaderboard</a></li>
+        <li role="presentation"><a href="#chart">Chart</a></li>
+      </ul>
+      <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="tree">
+          <div class='tree-container'>
+          </div>
+        </div>
+        <div role="tabpanel" class="tab-pane" id="leaderboard">
+          <div class='note-container'>
+            <p>
+              Note: Values below represent the number records indexed any time in March.
+              This is not the same as the official scoring in the tree,
+              which is adjusted based on ward attendance and only includes records
+              indexed during the activity.
+            </p>
+          </div>
+          <div class='stats-container'>
+          </div>
+        </div>
+        <div role="tabpanel" class="tab-pane" id="chart">
+        </div>
       </div>
     </div>
     <footer class='footer'>
