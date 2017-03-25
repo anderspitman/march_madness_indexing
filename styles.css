@@ -15,20 +15,21 @@ body {
 }
 
 .tree-container {
-    min-height: 300px;
-    height: var(--content-height);
+    //min-height: 300px;
+    //height: var(--content-height);
+    max-height: 550px;
     //background-color: red;
 }
 
 .stats-container {
     --stats-height: calc(var(--content-height) - var(--note-height));
-    min-height: 535px;
-    height: var(--stats-height);
+    //min-height: 535px;
+    //height: var(--stats-height);
     //background-color: blue;
 }
 
 .note-container {
-    max-height: var(--note-height);
+    //max-height: var(--note-height);
     //background-color: green;
 }
 
