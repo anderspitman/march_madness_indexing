@@ -1,4 +1,4 @@
-(function(d3, firebase) {
+(function($, d3, firebase) {
 
   var wardInfo;
   var allData;
@@ -28,6 +28,8 @@
 
     var db = firebase.database();
 
+    var startTime = Date.now();
+
     db.ref().child('ward_information').once('value')
     .then(function(snapshot) {
 
@@ -43,6 +45,9 @@
     })
     .then(function(snapshot) {
       var val = snapshot.val();
+
+      var elapsed = (Date.now() - startTime) / 1000;
+      console.log("Seconds to retrieve data:", elapsed);
 
       makeCharts(getFirstItem(val), contributorStats);
     });
@@ -439,4 +444,4 @@
     return leaders;
   }
 
-}(d3, firebase));
+}($, d3, firebase));
