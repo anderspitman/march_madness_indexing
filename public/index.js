@@ -63,9 +63,9 @@
     var tree = treeChart();
     svg.call(tree);
 
-    var stats = d3.select('.stats-container').append("svg")
-        .attr("width", "100%")
-        .attr("height", "100%");
+    var stats = d3.select('.stats-container').append("div")
+        //.attr("width", "100%")
+        //.attr("height", "100%");
 
     stats.call(statsChart().data(contributorStats));
   }
@@ -292,9 +292,8 @@
 
     function my(selection) {
 
-      var totalRec = selection.append("g")
-          .attr("transform", svgTranslateString(0, 20))
-          .attr("class", "total-records");
+      var totalRec = selection.append("div")
+          .attr("class", "record");
 
       // Calculate total indexed records
       var total = 0;
@@ -306,76 +305,64 @@
       });
 
       var oldRecord = 6970;
-      totalRec.append("text")
-          .attr("font-size", 16)
-          .attr("font-weight", "bold")
+      totalRec.append("div")
           .text("Stake Total:");
 
-      totalRec.append("text")
-          .attr("y", 20)
-          .attr("font-size", 16)
-          .attr("font-weight", "bold")
+      totalRec.append("div")
           .text(total);
 
-      var prevRecord = selection.append("g")
-          .attr("transform", svgTranslateString(0, 70))
-          .attr("class", "previous-record")
-
-      prevRecord.append("text")
-          .attr("font-size", 16)
-          .attr("font-weight", "bold")
-          .attr("text-decoration", function(d) {
+      var prevRecord = selection.append("div")
+          .attr("class", "record")
+          .classed("record--obselete", function(d) {
             if (total > oldRecord) {
-              return "line-through";
+              return true;
             }
             else {
-              return null;
+              return false;
             }
-          })
+          });
+
+      prevRecord.append("div")
           .text("Old Record (July 2016):");
 
-      prevRecord.append("text")
-          .attr("font-size", 16)
-          .attr("font-weight", "bold")
-          .attr("y", 20)
-          .attr("text-decoration", function(d) {
-            if (total > oldRecord) {
-              return "line-through";
-            }
-            else {
-              return null;
-            }
-          })
+      prevRecord.append("div")
           .text(oldRecord);
 
       var leaders = computeLeaderboard(data);
 
       console.log(leaders);
 
-      var leaderboard = selection.append("g")
+      var leaderboard = selection.append("div")
           .attr("class", "leaderboard")
-          .attr("transform", svgTranslateString(0, 120));
 
-      leaderboard.append("text")
-          .attr("font-size", 16)
-          .attr("font-weight", "bold")
-          //.attr("text-anchor", "middle")
-          .attr("text-decoration", "underline")
-          //.attr("x", 70)
-          .text("Leaderboard");
+      var table = leaderboard.append("table")
+          .attr("class", "table table-striped leader-table");
 
-      leaderboard.append("g")
-          .attr("class", "leaders")
-          .attr("transform", svgTranslateString(0, 20))
-        .selectAll(".leader")
+      var headerRow = table.append("thead")
+        .append("tr");
+
+      headerRow.append("th")
+          .text("Rank");
+      headerRow.append("th")
+          .text("Name");
+      headerRow.append("th")
+          .text("Ward");
+      headerRow.append("th")
+          .text("Indexed");
+      
+      var tableBody = table.append("tbody");
+
+      var leaders = tableBody.selectAll(".leader")
           .data(leaders)
-        .enter().append("g")
+        .enter().append("tr")
           .attr("class", "leader")
-          .attr("transform", function(d, i) {
-            return svgTranslateString(0, i*20);
-          })
-        .append("text")
-          .text(function(d, i) {
+
+      leaders.append("td")
+          .text(function(d, i) { return i + 1; });
+
+      leaders.append("td")
+          .attr("class", "leaderboard__leader__name")
+          .text(function(d) {
             var nameSplit = d.name.split(" ");
 
             var name = nameSplit[0];
@@ -387,8 +374,14 @@
               name = nameSplit[0] + " " + nameSplit[nameSplit.length - 1];
             }
 
-            return (i + 1) + " " + name + " (" + shortNameMap[d.ward_name] + ")" + " - " + d.indexed;
+            return name;
           })
+
+      leaders.append("td")
+          .text(function(d) { return shortNameMap[d.ward_name]; });
+
+      leaders.append("td")
+          .text(function(d) { return d.indexed; });
     }
 
     my.data = function(value) {
@@ -399,6 +392,16 @@
 
     return my;
   }
+
+  //function leaderBoardRow() {
+  //  function my(selection) {
+  //    selection.append("tr")
+  //        .data(function(d) { return d; })
+  //      .enter().append("td"
+  //  }
+
+  //  return my;
+  //}
 
   function svgTranslateString(x, y) {
     return "translate(" + x + "," + y + ")";
