@@ -1,14 +1,15 @@
 (function($, d3, firebase) {
 
   var wardInfo;
-  var allData;
+  var latestEntry;
   var treeXml;
 
   $('#mainTabs a').click(function(e) {
-    console.log("tab clicked");
     e.preventDefault();
     $(this).tab('show');
   });
+
+  $('#mainTabs a:last').tab('show');
 
   d3.xml("assets/tree.svg").mimeType("image/svg+xml").get(function(error, xml) {
     if (error) throw error;
@@ -47,7 +48,10 @@
 
       contributorStats = getFirstItem(snapshot.val());
 
-      return db.ref().child('stake_and_ward_indexing').limitToLast(1).once('value');
+      //return db.ref().child('stake_and_ward_indexing').limitToLast(1).once('value');
+      var stakeRef = db.ref().child('stake_and_ward_indexing')
+        .orderByChild('timestamp');
+      return stakeRef.once('value');
     })
     .then(function(snapshot) {
       var val = snapshot.val();
@@ -55,14 +59,16 @@
       var elapsed = (Date.now() - startTime) / 1000;
       console.log("Seconds to retrieve data:", elapsed);
 
-      makeCharts(getFirstItem(val), contributorStats);
+      makeCharts(val, contributorStats);
     });
   }
 
   function makeCharts(data, contributorStats) {
 
-    console.log("Processing data from:", data.timestamp);
-    allData = data.units;
+    allData = transformData(data);
+
+    latestEntry = allData[allData.length - 1];
+    console.log("Processing data from:", latestEntry.timestamp);
 
     d3.select('.tree-container')
       .node().appendChild(treeXml.documentElement);
@@ -79,6 +85,11 @@
         //.attr("height", "100%");
 
     stats.call(statsChart().data(contributorStats));
+
+    // line chart
+    var line = d3.select('.chart-container').append("div");
+    line.call(lineChart().data(allData).wardInfo(wardInfo));
+    
   }
 
   function treeChart() {
@@ -251,9 +262,9 @@
 
             if (d.name === "???") return null;
 
-            if (allData[d.name] !== undefined) {
+            if (latestEntry.units[d.name] !== undefined) {
               return Math.floor(wardInfo[d.name].size_normalization_ratio *
-                (allData[d.name].indexed - wardInfo[d.name].start_value));
+                (latestEntry.units[d.name].indexed - wardInfo[d.name].start_value));
             }
             else {
               return "0";
@@ -340,8 +351,6 @@
           .text(oldRecord);
 
       var leaders = computeLeaderboard(data);
-
-      console.log(leaders);
 
       var leaderboard = selection.append("div")
           .attr("class", "leaderboard")
@@ -448,6 +457,39 @@
     var leaders = sorted.slice(0, 20);
 
     return leaders;
+  }
+
+  function transformData(data) {
+    var dataArray = objectToArray(data, function(elem) {
+      elem.date = new Date(elem.timestamp);
+      return elem;
+    });
+
+    var sorted = dataArray.sort(function(a, b) {
+      var aTime = a.date.getTime();
+      var bTime = b.date.getTime();
+
+      // ascending order
+      if (aTime < bTime) return -1;
+      if (aTime > bTime) return 1;
+      return 0;
+    });
+
+    return sorted;
+  }
+
+  function objectToArray(obj, transformFunc) {
+    var array = [];
+    Object.keys(obj).forEach(function(key) {
+      if (transformFunc !== undefined) {
+        array.push(transformFunc(obj[key]));
+      }
+      else {
+        array.push(obj[key]);
+      }
+    });
+
+    return array;
   }
 
 }($, d3, firebase));
