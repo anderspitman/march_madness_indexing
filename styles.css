@@ -26,6 +26,13 @@ body {
     //background-color: blue;
 }
 
+.line-chart-svg {
+    width: 100%;
+    //height: 100%;
+    height: 70vh;
+    //height: 500px;
+}
+
 .stats-container {
     --stats-height: calc(var(--content-height) - var(--note-height));
     //min-height: 535px;

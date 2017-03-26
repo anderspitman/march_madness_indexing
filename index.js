@@ -1,5 +1,7 @@
 (function($, d3, firebase) {
+  "use strict";
 
+  var allData;
   var wardInfo;
   var latestEntry;
   var treeXml;
@@ -7,6 +9,19 @@
   $('#mainTabs a').click(function(e) {
     e.preventDefault();
     $(this).tab('show');
+  });
+
+  var lineChartExists = false;
+  $('#mainTabs a[href="#chart"]').on('shown.bs.tab', function(e) {
+    console.log("show");
+
+    // TODO: Hack. Figure out proper way to not add a chart every time the
+    // tab is clicked.
+    if (!lineChartExists) {
+      var line = d3.select('.chart-container').append("div");
+      line.call(lineChart().data(allData).wardInfo(wardInfo));
+      lineChartExists = true;
+    }
   });
 
   //$('#mainTabs a:last').tab('show');
@@ -87,8 +102,8 @@
     stats.call(statsChart().data(contributorStats));
 
     // line chart
-    var line = d3.select('.chart-container').append("div");
-    line.call(lineChart().data(allData).wardInfo(wardInfo));
+    //var line = d3.select('.chart-container').append("div");
+    //line.call(lineChart().data(allData).wardInfo(wardInfo));
     
   }
 

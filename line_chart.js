@@ -14,10 +14,13 @@ var lineChart = (function(d3) {
 
     function my(selection) {
       var svg = selection.append("svg")
-          .style("width", "100%")
-          .style("height", "70%");
+          .attr("class", "line-chart-svg")
       var width = parseInt(svg.style("width")) - margin.left - margin.right;
       var height = parseInt(svg.style("height")) - margin.top - margin.bottom;
+
+
+      console.log(width, height);
+
       var g = svg.append("g")
           .attr("transform", svgTranslateString(margin.left, margin.top));
 
