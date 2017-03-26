@@ -38,28 +38,27 @@
         </div>
       </nav>
       <ul id="mainTabs" class="nav nav-tabs">
-        <li role="presentation" class="active"><a href="#tree">Tree</a></li>
+        <li role="presentation" class="active"><a href="#tree">Bracket</a></li>
         <li role="presentation"><a href="#leaderboard">Leaderboard</a></li>
         <li role="presentation"><a href="#chart">Chart</a></li>
       </ul>
       <div class="tab-content">
-        <div role="tabpanel" class="tab-pane active" id="tree">
-          <div class='tree-container'>
-          </div>
+        <div role="tabpanel" class="tab-pane active fade in" id="tree">
+          <div class='tree-container'></div>
         </div>
-        <div role="tabpanel" class="tab-pane" id="leaderboard">
+        <div role="tabpanel" class="tab-pane fade" id="leaderboard">
           <div class='note-container'>
             <p>
-              Note: Values below represent the number records indexed any time in March.
-              This is not the same as the official scoring in the tree,
-              which is adjusted based on ward attendance and only includes records
-              indexed during the activity.
+              Note: Values below represent the number records indexed any time
+              in March. This is not the same as the official scoring in the
+              tree, which is adjusted based on ward attendance and only
+              includes records indexed during the activity.
             </p>
           </div>
-          <div class='stats-container'>
-          </div>
+          <div class='stats-container'></div>
         </div>
-        <div role="tabpanel" class="tab-pane" id="chart">
+        <div role="tabpanel" class="tab-pane fade" id="chart">
+          <div class='chart-container'></div>
         </div>
       </div>
     </div>
@@ -93,6 +92,7 @@
     <script src="https://www.gstatic.com/firebasejs/3.7.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/3.7.1/firebase-database.js"></script>
     <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="line_chart.js"></script>
     <script src="index.js"></script>
   </body>
 

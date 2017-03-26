@@ -21,8 +21,9 @@ body {
 }
 
 .chart-container {
-    width: 300px;
-    background-color: blue;
+    //width: 100%;
+    //height: 70vh;
+    //background-color: blue;
 }
 
 .stats-container {
