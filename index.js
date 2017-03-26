@@ -9,7 +9,7 @@
     $(this).tab('show');
   });
 
-  $('#mainTabs a:last').tab('show');
+  //$('#mainTabs a:last').tab('show');
 
   d3.xml("assets/tree.svg").mimeType("image/svg+xml").get(function(error, xml) {
     if (error) throw error;
