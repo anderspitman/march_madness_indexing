@@ -26,6 +26,15 @@ var lineChart = (function(d3) {
 
       var tData = transformData(data);
 
+      console.log(tData);
+      var prev = tData.units[8][0];
+      tData.units[8].forEach(function(entry, index) {
+        if ((entry.indexed - prev.indexed) > 189) {
+          console.log("Found it", index, entry);
+        }
+        prev = entry;
+      });
+
       var x = d3.scaleTime()
           .domain(d3.extent(tData.dates))
           .rangeRound([0, width]);
@@ -38,10 +47,19 @@ var lineChart = (function(d3) {
 
       var line = d3.line()
           .x(function(d, i) { return x(tData.dates[i]); })
-          .y(function(d) {
+          .y(function(d, i) {
+            // TODO FIXME: Major hack to make the graph look right historically
+            // Hard coded to handle some University stuff
+            var date = tData.dates[i];
+            var universityOffset = 0;
+            if (d.unit_name === 'university' &&
+                date < new Date('2017-03-24T11:59:59-07:00')) {
+              // 248 represents Karen van der Werf's indexing
+              universityOffset = 248;
+            }
             var val = calculateScore(d.indexed,
               wardInfo[d.unit_name].size_normalization_ratio,
-              wardInfo[d.unit_name].start_value);
+              wardInfo[d.unit_name].start_value - universityOffset);
             return y(val);
           })
 
