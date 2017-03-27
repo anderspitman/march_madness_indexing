@@ -9,6 +9,7 @@ from datetime import datetime, timezone, timedelta
 from pprint import pprint
 
 unit_map = {
+    "Statistics of Contributors that Moved": "moved",
     "Tempe Arizona YSA Stake": "full_stake",
     "Horizon YSA Ward": "horizon",
     "McClintock YSA Ward": "mcclintock",
