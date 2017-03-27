@@ -145,7 +145,7 @@ var lineChart = (function(d3) {
         newData.dates.push(entry.date);
 
         Object.keys(entry.units).forEach(function(unitName) {
-          if (unitName !== "full_stake") {
+          if (unitName !== "full_stake" && unitName !== "moved") {
             if (newData.units[unitName] === undefined) {
               newData.units[unitName] = []
             }
@@ -185,6 +185,7 @@ var lineChart = (function(d3) {
       var max = 0;
 
       data.units.forEach(function(ward) {
+
         // max should be last entry for the ward
         var last = ward[ward.length - 1];
         var wardMax = utils.calculateScore(last.indexed,
