@@ -14,7 +14,6 @@
 
   var lineChartExists = false;
   $('#mainTabs a[href="#chart"]').on('shown.bs.tab', function(e) {
-    console.log("show");
 
     // TODO: Hack. Figure out proper way to not add a chart every time the
     // tab is clicked.
@@ -83,7 +82,7 @@
 
     allData = transformData(data);
 
-    console.log(allData);
+    //console.log(allData);
 
     //roundStartIndices = calculateRoundStartIndices(allData);
 
