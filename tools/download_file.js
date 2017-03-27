@@ -1,7 +1,4 @@
-var casper = require('casper').create({
-  verbose: true,
-  logLevel: "debug"
-});
+var casper = require('casper').create();
 
 var x = require('casper').selectXPath;
 

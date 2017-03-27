@@ -18,22 +18,18 @@ var lineChart = (function(d3) {
       var width = parseInt(svg.style("width")) - margin.left - margin.right;
       var height = parseInt(svg.style("height")) - margin.top - margin.bottom;
 
-
-      console.log(width, height);
-
       var g = svg.append("g")
           .attr("transform", svgTranslateString(margin.left, margin.top));
 
       var tData = transformData(data);
 
-      console.log(tData);
-      var prev = tData.units[8][0];
-      tData.units[8].forEach(function(entry, index) {
-        if ((entry.indexed - prev.indexed) > 189) {
-          console.log("Found it", index, entry);
-        }
-        prev = entry;
-      });
+      //var prev = tData.units[8][0];
+      //tData.units[8].forEach(function(entry, index) {
+      //  if ((entry.indexed - prev.indexed) > 189) {
+      //    console.log("Found it", index, entry);
+      //  }
+      //  prev = entry;
+      //});
 
       var x = d3.scaleTime()
           .domain(d3.extent(tData.dates))
