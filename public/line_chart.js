@@ -83,6 +83,23 @@ var lineChart = (function(d3) {
           .attr("stroke-width", 1.5)
           .attr("d", line);
 
+      // start of round 2 marker
+      var roundTwoMarker = g.append("g")
+          .attr("class", "round-start-marker")
+
+      roundTwoMarker.append("text")
+          .attr("x", function(d) { return x(new Date("2017-03-27T00:00:00-07:00")); })
+          .attr("y", 0)
+          .attr("text-anchor", "middle")
+          .text("Start of Round 2");
+
+      roundTwoMarker.append("rect")
+          .attr("x", function(d) { return x(new Date("2017-03-27T00:00:00-07:00")); })
+          .attr("y", 0)
+          .attr("width", 2)
+          .attr("height", height)
+          .attr("fill", "red");
+
       var legendWards = g.append("g")
           .attr("class", "legend")
           .attr("transform", svgTranslateString(15, 15))
