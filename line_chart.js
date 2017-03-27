@@ -57,7 +57,7 @@ var lineChart = (function(d3) {
               // 248 represents Karen van der Werf's indexing
               universityOffset = 248;
             }
-            var val = calculateScore(d.indexed,
+            var val = utils.calculateScore(d.indexed,
               wardInfo[d.unit_name].size_normalization_ratio,
               wardInfo[d.unit_name].start_value - universityOffset);
             return y(val);
@@ -174,7 +174,7 @@ var lineChart = (function(d3) {
       data.units.forEach(function(ward) {
         // max should be last entry for the ward
         var last = ward[ward.length - 1];
-        var wardMax = calculateScore(last.indexed,
+        var wardMax = utils.calculateScore(last.indexed,
           wardInfo[last.unit_name].size_normalization_ratio,
           wardInfo[last.unit_name].start_value);
 
@@ -187,10 +187,6 @@ var lineChart = (function(d3) {
     }
 
     return my;
-  }
-
-  function calculateScore(recordsIndexed, wardHandicap, wardStartValue) {
-    return (recordsIndexed - wardStartValue) * wardHandicap;
   }
 
   function svgTranslateString(x, y) {

@@ -4,6 +4,7 @@
   var allData;
   var wardInfo;
   var latestEntry;
+  //var roundStartIndices;
   var treeXml;
 
   $('#mainTabs a').click(function(e) {
@@ -82,6 +83,10 @@
 
     allData = transformData(data);
 
+    console.log(allData);
+
+    //roundStartIndices = calculateRoundStartIndices(allData);
+
     latestEntry = allData[allData.length - 1];
     console.log("Processing data from:", latestEntry.timestamp);
 
@@ -129,16 +134,16 @@
 
     var secondRoundData = [
       [
-        { "name": "???", "x": 103, "y": 265 },
-        { "name": "???", "x": 63, "y": 335 }
+        { "name": "mission_bay", "x": 103, "y": 265 },
+        { "name": "horizon", "x": 63, "y": 335 }
       ],
       [
-        { "name": "???", "x": 335, "y": 192 },
-        { "name": "???", "x": 430, "y": 188 }
+        { "name": "south_mountain", "x": 335, "y": 192 },
+        { "name": "university", "x": 430, "y": 188 }
       ],
       [
-        { "name": "???", "x": 664, "y": 268 },
-        { "name": "???", "x": 576, "y": 209 }
+        { "name": "pioneer", "x": 664, "y": 268 },
+        { "name": "mcclintock", "x": 576, "y": 209 }
       ]
     ];
 
@@ -278,8 +283,7 @@
             if (d.name === "???") return null;
 
             if (latestEntry.units[d.name] !== undefined) {
-              return Math.floor(wardInfo[d.name].size_normalization_ratio *
-                (latestEntry.units[d.name].indexed - wardInfo[d.name].start_value));
+              return calculateScoreForRound(d.name, round);
             }
             else {
               return "0";
@@ -505,6 +509,82 @@
     });
 
     return array;
+  }
+
+  //function calculateRoundStartIndices(data) {
+  //  var roundStartDates = {
+  //    first: new Date("2017-03-20T00:00:00-07:00"),
+  //    second: new Date("2017-03-27T00:00:00-07:00"),
+  //    third: new Date("2017-04-03T00:00:00-07:00")
+  //  };
+
+  //  // find indices of start dates
+  //  var indices = {
+  //    first: 0,
+  //    second: 0,
+  //    third: 0
+  //  };
+
+  //  data.forEach(function(entry, index) {
+
+  //    ['first', 'second', 'third'].forEach(function(round) {
+  //      if (entry.date < roundStartDates[round]) {
+  //        indices[round] = index;
+  //      }
+  //    });
+
+  //  });
+
+  //  console.log(indices);
+
+  //  return indices;
+  //}
+
+  function calculateScoreForRound(wardName, round) {
+
+    //var correction;
+    //if (round === 'first') {
+    //  correction = 0;
+    //}
+    //else {
+    //  correction = allData[roundStartIndices[round]].units[wardName].indexed;
+    //}
+
+    //var indexed =
+    //  latestEntry.units[wardName].indexed -
+    //  correction +
+    //  wardInfo[wardName].start_value;
+
+    //var score = utils.calculateScore(indexed,
+    //  wardInfo[wardName].size_normalization_ratio,
+    //  wardInfo[wardName].start_value);
+
+    var score;
+
+    var firstRoundIndexed = allData[278].units[wardName].indexed;
+
+    switch(round) {
+      case 'first':
+        score = utils.calculateScore(firstRoundIndexed,
+          wardInfo[wardName].size_normalization_ratio,
+          wardInfo[wardName].start_value);
+        break;
+      case 'second':
+        var indexed = latestEntry.units[wardName].indexed -
+          firstRoundIndexed + wardInfo[wardName].start_value;
+        score = utils.calculateScore(indexed,
+          wardInfo[wardName].size_normalization_ratio,
+          wardInfo[wardName].start_value);
+        break;
+      case 'third':
+        score = 0;
+        break;
+      default:
+        throw "Invalid round";
+        break;
+    }
+
+    return score;
   }
 
 }($, d3, firebase));
