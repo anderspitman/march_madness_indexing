@@ -11,6 +11,8 @@ var lineChart = (function(d3) {
 
     var data;
     var wardInfo;
+    var startDate;
+    var endDate;
 
     function my(selection) {
       var svg = selection.append("svg")
@@ -31,8 +33,10 @@ var lineChart = (function(d3) {
       //  prev = entry;
       //});
 
+      console.log(startDate);
       var x = d3.scaleTime()
-          .domain(d3.extent(tData.dates))
+          //.domain(d3.extent(tData.dates))
+          .domain([startDate, endDate])
           .rangeRound([0, width]);
 
       var max = calculateMax(tData);
@@ -129,6 +133,18 @@ var lineChart = (function(d3) {
     my.data = function(value) {
       if (!arguments.length) return data;
       data = value;
+      return my;
+    }
+
+    my.startDate = function(value) {
+      if (!arguments.length) return startDate;
+      startDate = value;
+      return my;
+    }
+
+    my.endDate = function(value) {
+      if (!arguments.length) return endDate;
+      endDate = value;
       return my;
     }
 

@@ -18,9 +18,33 @@
     // TODO: Hack. Figure out proper way to not add a chart every time the
     // tab is clicked.
     if (!lineChartExists) {
+
+      var lc = lineChart();
       var line = d3.select('.chart-container').append("div");
-      line.call(lineChart().data(allData).wardInfo(wardInfo));
+      lc
+        .data(allData)
+        .wardInfo(wardInfo)
+        .startDate(new Date("2017-03-22T23:00:00-07:00"))
+        .endDate(new Date());
+      line.call(lc);
+
       lineChartExists = true;
+    }
+  });
+
+  var round1ChartExists = false;
+  $('#mainTabs a[href="#chart_round1"]').on('shown.bs.tab', function(e) {
+    if (!round1ChartExists) {
+
+      var lc = lineChart();
+      var lineRound1 = d3.select('.chart-round1-container').append("div");
+      lc
+        .data(allData)
+        .wardInfo(wardInfo)
+        .startDate(new Date("2017-03-22T23:00:00-07:00"))
+        .endDate(new Date("2017-03-27T00:00:00-07:00"));
+      lineRound1.call(lc);
+      round1ChartExists = true;
     }
   });
 
