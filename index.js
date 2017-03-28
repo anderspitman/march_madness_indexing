@@ -40,11 +40,29 @@
       var lineRound1 = d3.select('.chart-round1-container').append("div");
       lc
         .data(allData)
+        .round('first')
         .wardInfo(wardInfo)
         .startDate(new Date("2017-03-22T23:00:00-07:00"))
         .endDate(new Date("2017-03-27T00:00:00-07:00"));
       lineRound1.call(lc);
       round1ChartExists = true;
+    }
+  });
+
+  var round2ChartExists = false;
+  $('#mainTabs a[href="#chart_round2"]').on('shown.bs.tab', function(e) {
+    if (!round2ChartExists) {
+
+      var lc = lineChart();
+      var lineRound2 = d3.select('.chart-round2-container').append("div");
+      lc
+        .data(allData)
+        .round('second')
+        .wardInfo(wardInfo)
+        .startDate(new Date("2017-03-27T00:00:00-07:00"))
+        .endDate(new Date());
+      lineRound2.call(lc);
+      round2ChartExists = true;
     }
   });
 
