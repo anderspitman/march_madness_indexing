@@ -44,18 +44,26 @@ var lineChart = (function(d3) {
       var line = d3.line()
           .x(function(d, i) { return x(tData.dates[i]); })
           .y(function(d, i) {
-            // TODO FIXME: Major hack to make the graph look right historically
-            // Hard coded to handle some University stuff
             var date = tData.dates[i];
-            var universityOffset = 0;
+            // TODO FIXME: Major hack to make the graph look right historically
+            // Hard coded to handle some University and Mission Bay stuff
+            var offset = 0;
             if (d.unit_name === 'university' &&
-                date < new Date('2017-03-24T11:59:59-07:00')) {
+                date < new Date('2017-03-25T00:00:00-07:00')) {
               // 248 represents Karen van der Werf's indexing
-              universityOffset = 248;
+              console.log("offset university");
+              offset = 248;
             }
+            if (d.unit_name === 'mission_bay' &&
+                date < new Date('2017-03-27T23:00:00-07:00')) {
+              // 76 represents David Heywood's indexing
+              console.log("offset mb");
+              offset = 76;
+            }
+            console.log(offset);
             var val = utils.calculateScore(d.indexed,
               wardInfo[d.unit_name].size_normalization_ratio,
-              wardInfo[d.unit_name].start_value - universityOffset);
+              wardInfo[d.unit_name].start_value - offset);
             return y(val);
           })
 
