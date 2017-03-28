@@ -351,6 +351,25 @@
       totalRec.append("div")
           .text(total);
 
+     
+      var total2016Val = 18342;
+      var total2016 = selection.append("div")
+          .attr("class", "record")
+          .classed("record--obselete", function(d) {
+            if (total > total2016Val) {
+              return true;
+            }
+            else {
+              return false;
+            }
+          });
+
+      total2016.append("div")
+          .text("Total indexed in ALL of 2016:");
+
+      total2016.append("div")
+          .text(total2016Val);
+
       var prevRecord = selection.append("div")
           .attr("class", "record")
           .classed("record--obselete", function(d) {
@@ -363,7 +382,7 @@
           });
 
       prevRecord.append("div")
-          .text("Old Record (July 2016):");
+          .text("Old monthly record (July 2016):");
 
       prevRecord.append("div")
           .text(oldRecord);
