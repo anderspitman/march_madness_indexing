@@ -51,16 +51,14 @@ var lineChart = (function(d3) {
             if (d.unit_name === 'university' &&
                 date < new Date('2017-03-25T00:00:00-07:00')) {
               // 248 represents Karen van der Werf's indexing
-              console.log("offset university");
               offset = 248;
             }
             if (d.unit_name === 'mission_bay' &&
                 date < new Date('2017-03-27T23:00:00-07:00')) {
               // 76 represents David Heywood's indexing
-              console.log("offset mb");
               offset = 76;
             }
-            console.log(offset);
+
             var val = utils.calculateScore(d.indexed,
               wardInfo[d.unit_name].size_normalization_ratio,
               wardInfo[d.unit_name].start_value - offset);
