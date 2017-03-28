@@ -10,6 +10,7 @@ var lineChart = (function(d3) {
     };
 
     var data;
+    var round;
     var wardInfo;
     var startDate;
     var endDate;
@@ -63,7 +64,14 @@ var lineChart = (function(d3) {
               offset = 76;
             }
 
-            var val = utils.calculateScore(d.indexed,
+            var indexed = d.indexed;
+            if (round === 'second') {
+              var firstRoundIndexed = data[278].units[d.unit_name].indexed;
+              var indexed = d.indexed -
+                firstRoundIndexed + wardInfo[d.unit_name].start_value;
+            }
+
+            var val = utils.calculateScore(indexed,
               wardInfo[d.unit_name].size_normalization_ratio,
               wardInfo[d.unit_name].start_value - offset);
             return y(val);
@@ -89,22 +97,24 @@ var lineChart = (function(d3) {
           .attr("stroke-width", 1.5)
           .attr("d", line);
 
-      // start of round 2 marker
-      var roundTwoMarker = g.append("g")
-          .attr("class", "round-start-marker")
+      if (!round) {
+        // start of round 2 marker
+        var roundTwoMarker = g.append("g")
+            .attr("class", "round-start-marker")
 
-      roundTwoMarker.append("text")
-          .attr("x", function(d) { return x(new Date("2017-03-27T00:00:00-07:00")); })
-          .attr("y", 0)
-          .attr("text-anchor", "middle")
-          .text("Start of Round 2");
+        roundTwoMarker.append("text")
+            .attr("x", function(d) { return x(new Date("2017-03-27T00:00:00-07:00")); })
+            .attr("y", 0)
+            .attr("text-anchor", "middle")
+            .text("Start of Round 2");
 
-      roundTwoMarker.append("rect")
-          .attr("x", function(d) { return x(new Date("2017-03-27T00:00:00-07:00")); })
-          .attr("y", 0)
-          .attr("width", 2)
-          .attr("height", height)
-          .attr("fill", "red");
+        roundTwoMarker.append("rect")
+            .attr("x", function(d) { return x(new Date("2017-03-27T00:00:00-07:00")); })
+            .attr("y", 0)
+            .attr("width", 2)
+            .attr("height", height)
+            .attr("fill", "red");
+      }
 
       var legendWards = g.append("g")
           .attr("class", "legend")
@@ -133,6 +143,12 @@ var lineChart = (function(d3) {
     my.data = function(value) {
       if (!arguments.length) return data;
       data = value;
+      return my;
+    }
+
+    my.round = function(value) {
+      if (!arguments.length) return round;
+      round = value;
       return my;
     }
 
