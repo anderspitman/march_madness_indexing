@@ -119,25 +119,31 @@ def print_changes(prev_data, data):
     print("Data Change")
     print(get_arizona_timestamp())
     for key in prev_data['units']:
-        if prev_data['units'][key] != data['units'][key]:
-            print("<<<<<<<<<<<<<<<<<<<<")
-            pprint(prev_data['units'][key])
-            print("====================")
-            pprint(data['units'][key])
-            print(">>>>>>>>>>>>>>>>>>>>")
+        if key in data['units']:
+            if prev_data['units'][key] != data['units'][key]:
+                print("<<<<<<<<<<<<<<<<<<<<")
+                pprint(prev_data['units'][key])
+                print("====================")
+                pprint(data['units'][key])
+                print(">>>>>>>>>>>>>>>>>>>>")
+        else:
+            print('key "{}" removed in new data'.format(key))
 
 def print_contributor_changes(prev_data, data):
     print("Data Change")
     print(get_arizona_timestamp())
     for ward in prev_data['wards']:
         for person in prev_data['wards'][ward]:
-            for other in data['wards'][ward]:
-                if person['name'] == other['name'] and person != other:
-                    print("<<<<<<<<<<<<<<<<<<<<")
-                    pprint(person)
-                    print("====================")
-                    pprint(other)
-                    print(">>>>>>>>>>>>>>>>>>>>")
+            if ward in data['wards']:
+                for other in data['wards'][ward]:
+                    if person['name'] == other['name'] and person != other:
+                        print("<<<<<<<<<<<<<<<<<<<<")
+                        pprint(person)
+                        print("====================")
+                        pprint(other)
+                        print(">>>>>>>>>>>>>>>>>>>>")
+            else:
+                print('ward "{}" removed in new data'.format(ward))
 
 def get_arizona_timestamp():
     return datetime.now(timezone(-timedelta(hours=7))).isoformat()
