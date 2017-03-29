@@ -25,6 +25,7 @@ var lineChart = (function(d3) {
           .attr("transform", svgTranslateString(margin.left, margin.top));
 
       var tData = transformData(data);
+      console.log(tData);
 
       //var prev = tData.units[8][0];
       //tData.units[8].forEach(function(entry, index) {
@@ -34,9 +35,7 @@ var lineChart = (function(d3) {
       //  prev = entry;
       //});
 
-      console.log(startDate);
       var x = d3.scaleTime()
-          //.domain(d3.extent(tData.dates))
           .domain([startDate, endDate])
           .rangeRound([0, width]);
 
@@ -49,6 +48,9 @@ var lineChart = (function(d3) {
       var line = d3.line()
           .x(function(d, i) { return x(tData.dates[i]); })
           .y(function(d, i) {
+
+
+
             var date = tData.dates[i];
             // TODO FIXME: Major hack to make the graph look right historically
             // Hard coded to handle some University and Mission Bay stuff
@@ -64,11 +66,18 @@ var lineChart = (function(d3) {
               offset = 76;
             }
 
+            // TODO: Very hacky. At least remove the hard coded 2nd round
+            // number...
             var indexed = d.indexed;
             if (round === 'second') {
-              var firstRoundIndexed = data[278].units[d.unit_name].indexed;
+
+              var round2StartIndex = 278;
+              if (i < round2StartIndex) return y(0);
+
+              var firstRoundIndexed =
+                data[round2StartIndex].units[d.unit_name].indexed;
               var indexed = d.indexed -
-                firstRoundIndexed + wardInfo[d.unit_name].start_value;
+                firstRoundIndexed + wardInfo[d.unit_name].start_value - offset;
             }
 
             var val = utils.calculateScore(indexed,
