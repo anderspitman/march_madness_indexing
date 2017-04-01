@@ -4,11 +4,11 @@ var x = require('casper').selectXPath;
 
 var auth;
 
-downloadStateMarchReport(casper);
+downloadStateAprilReport(casper);
 downloadContributorStatistics(casper);
 
 
-function downloadStateMarchReport(casper) {
+function downloadStateAprilReport(casper) {
   casper.options.waitTimeout = 60000;
 
   casper.start('https://indexing.familysearch.org/admin/unit.jsf');
@@ -40,9 +40,9 @@ function downloadStateMarchReport(casper) {
     casper.selectOptionByValue(timelineSelector, 'report_type.monthly');
   });
 
-  var monthSelector = x('//select/option[@value="report_period.monthly_march"]');
+  var monthSelector = x('//select/option[@value="report_period.monthly_april"]');
   casper.waitForSelector(monthSelector, function() {
-    casper.selectOptionByValue('select[name="reports:_id104"]', 'report_period.monthly_march');
+    casper.selectOptionByValue('select[name="reports:_id104"]', 'report_period.monthly_april');
   });
 
   casper.then(function() {

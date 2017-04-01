@@ -105,7 +105,7 @@ def update_database(data):
 
     db = firebase.database()
 
-    db.child("stake_and_ward_indexing").push(data)
+    db.child("stake_and_ward_indexing_april").push(data)
 
 def update_database_contributors(data):
     firebase = pyrebase.initialize_app(firebase_config)
