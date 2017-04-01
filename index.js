@@ -2,6 +2,7 @@
   "use strict";
 
   var allData;
+  var aprilData;
   var wardInfo;
   var latestEntry;
   //var roundStartIndices;
@@ -102,8 +103,16 @@
       return db.ref().child('contributors').limitToLast(1).once('value');
     })
     .then(function(snapshot) {
-
       contributorStats = getFirstItem(snapshot.val());
+
+      var ref = db.ref().child('stake_and_ward_indexing_april')
+        .orderByChild('timestamp');
+      return ref.once('value');
+    })
+    .then(function(snapshot) {
+
+      aprilData = snapshot.val();
+
 
       //return db.ref().child('stake_and_ward_indexing').limitToLast(1).once('value');
       var stakeRef = db.ref().child('stake_and_ward_indexing')
@@ -122,14 +131,41 @@
 
   function makeCharts(data, contributorStats) {
 
+    var apd = transformData(aprilData);
     allData = transformData(data);
-
-    //console.log(allData);
 
     //roundStartIndices = calculateRoundStartIndices(allData);
 
     latestEntry = allData[allData.length - 1];
     console.log("Processing data from:", latestEntry.timestamp);
+
+    apd.forEach(function(entry) {
+      //if (entry.date < new Date("2017-04-01T00:00:00-07:00")) {
+
+      var units = {};
+      Object.keys(latestEntry.units).forEach(function(unit) {
+
+        // clone it
+        units[unit] = $.extend(true, {}, latestEntry.units[unit]);
+
+        if (entry.units[unit]) {
+          units[unit].arbitrated += entry.units[unit].arbitrated;
+          units[unit].indexed += entry.units[unit].indexed;
+          units[unit].redo_batches += entry.units[unit].redo_batches;
+        }
+      });
+
+      var combined = {
+        timestamp: entry.timestamp,
+        date: entry.date,
+        units: units
+      };
+
+      allData.push(combined);
+      //}
+    });
+
+    latestEntry = allData[allData.length - 1];
 
     d3.select('.tree-container')
       .node().appendChild(treeXml.documentElement);
@@ -386,48 +422,48 @@
         });
       });
 
-      var oldRecord = 6970;
+      //var oldRecord = 6970;
       totalRec.append("div")
-          .text("Stake Total:");
+          .text("Stake Total for April:");
 
       totalRec.append("div")
           .text(total);
 
      
-      var total2016Val = 18342;
-      var total2016 = selection.append("div")
-          .attr("class", "record")
-          .classed("record--obselete", function(d) {
-            if (total > total2016Val) {
-              return true;
-            }
-            else {
-              return false;
-            }
-          });
+      //var total2016Val = 18342;
+      //var total2016 = selection.append("div")
+      //    .attr("class", "record")
+      //    .classed("record--obselete", function(d) {
+      //      if (total > total2016Val) {
+      //        return true;
+      //      }
+      //      else {
+      //        return false;
+      //      }
+      //    });
 
-      total2016.append("div")
-          .text("Total indexed in ALL of 2016:");
+      //total2016.append("div")
+      //    .text("Total indexed in ALL of 2016:");
 
-      total2016.append("div")
-          .text(total2016Val);
+      //total2016.append("div")
+      //    .text(total2016Val);
 
-      var prevRecord = selection.append("div")
-          .attr("class", "record")
-          .classed("record--obselete", function(d) {
-            if (total > oldRecord) {
-              return true;
-            }
-            else {
-              return false;
-            }
-          });
+      //var prevRecord = selection.append("div")
+      //    .attr("class", "record")
+      //    .classed("record--obselete", function(d) {
+      //      if (total > oldRecord) {
+      //        return true;
+      //      }
+      //      else {
+      //        return false;
+      //      }
+      //    });
 
-      prevRecord.append("div")
-          .text("Old monthly record (July 2016):");
+      //prevRecord.append("div")
+      //    .text("Old monthly record (July 2016):");
 
-      prevRecord.append("div")
-          .text(oldRecord);
+      //prevRecord.append("div")
+      //    .text(oldRecord);
 
       var leaders = computeLeaderboard(data);
 
