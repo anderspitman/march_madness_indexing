@@ -100,7 +100,7 @@
 
       wardInfo = snapshot.val();
 
-      return db.ref().child('contributors').limitToLast(1).once('value');
+      return db.ref().child('contributors_april').limitToLast(1).once('value');
     })
     .then(function(snapshot) {
       contributorStats = getFirstItem(snapshot.val());

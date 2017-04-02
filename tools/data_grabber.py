@@ -112,7 +112,7 @@ def update_database_contributors(data):
 
     db = firebase.database()
 
-    db.child("contributors").push(data)
+    db.child("contributors_april").push(data)
 
 
 def print_changes(prev_data, data):
