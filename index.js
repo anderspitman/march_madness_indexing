@@ -81,6 +81,7 @@
   function firebaseStuff() {
 
     var contributorStats;
+    var contributorStatsMarch;
 
     var config = {
       apiKey: "AIzaSyAkHMLIBu1BMxSSrv7jX_6wnbg2WnujlCg",
@@ -100,7 +101,12 @@
 
       wardInfo = snapshot.val();
 
-      return db.ref().child('contributors_april').limitToLast(1).once('value');
+      return db.ref().child('contributors').orderByKey().limitToLast(1).once('value');
+    })
+    .then(function(snapshot) {
+      contributorStatsMarch = getFirstItem(snapshot.val());
+
+      return db.ref().child('contributors_april').orderByKey().limitToLast(1).once('value');
     })
     .then(function(snapshot) {
       contributorStats = getFirstItem(snapshot.val());
@@ -125,11 +131,11 @@
       var elapsed = (Date.now() - startTime) / 1000;
       console.log("Seconds to retrieve data:", elapsed);
 
-      makeCharts(val, contributorStats);
+      makeCharts(val, contributorStatsMarch, contributorStats);
     });
   }
 
-  function makeCharts(data, contributorStats) {
+  function makeCharts(data, contributorStatsMarch, contributorStats) {
 
     var apd = transformData(aprilData);
     allData = transformData(data);
@@ -177,10 +183,10 @@
     var tree = treeChart();
     svg.call(tree);
 
-    var stats = d3.select('.stats-container').append("div")
-        //.attr("width", "100%")
-        //.attr("height", "100%");
+    var stats = d3.select('.leaderboard-march-container').append("div")
+    stats.call(statsChart().data(contributorStatsMarch));
 
+    var stats = d3.select('.leaderboard-april-container').append("div")
     stats.call(statsChart().data(contributorStats));
 
     // line chart
@@ -424,7 +430,7 @@
 
       //var oldRecord = 6970;
       totalRec.append("div")
-          .text("Stake Total for April:");
+          .text("Stake Total for month:");
 
       totalRec.append("div")
           .text(total);
