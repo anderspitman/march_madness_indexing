@@ -173,6 +173,8 @@
 
     latestEntry = allData[allData.length - 1];
 
+    console.log(allData);
+
     d3.select('.tree-container')
       .node().appendChild(treeXml.documentElement);
 
@@ -232,9 +234,9 @@
 
     var thirdRoundData = [
       [
-        { "name": "???", "x": 282, "y": 365 },
-        { "name": "???", "x": 364, "y": 323 },
-        { "name": "???", "x": 446, "y": 345 }
+        { "name": "mission_bay", "x": 282, "y": 365 },
+        { "name": "south_mountain", "x": 364, "y": 323 },
+        { "name": "mcclintock", "x": 446, "y": 345 }
       ]
     ];
 
@@ -664,6 +666,7 @@
     var score;
 
     var firstRoundIndexed = allData[278].units[wardName].indexed;
+    var secondRoundIndexed = allData[870].units[wardName].indexed;
 
     switch(round) {
       case 'first':
@@ -672,14 +675,23 @@
           wardInfo[wardName].start_value);
         break;
       case 'second':
-        var indexed = latestEntry.units[wardName].indexed -
+        //var indexed = latestEntry.units[wardName].indexed -
+        //  firstRoundIndexed + wardInfo[wardName].start_value;
+        //score = utils.calculateScore(indexed,
+        //  wardInfo[wardName].size_normalization_ratio,
+        //  wardInfo[wardName].start_value);
+        var indexed = secondRoundIndexed -
           firstRoundIndexed + wardInfo[wardName].start_value;
         score = utils.calculateScore(indexed,
           wardInfo[wardName].size_normalization_ratio,
           wardInfo[wardName].start_value);
         break;
       case 'third':
-        score = 0;
+        var indexed = latestEntry.units[wardName].indexed -
+          secondRoundIndexed + wardInfo[wardName].start_value;
+        score = utils.calculateScore(indexed,
+          wardInfo[wardName].size_normalization_ratio,
+          wardInfo[wardName].start_value);
         break;
       default:
         throw "Invalid round";
