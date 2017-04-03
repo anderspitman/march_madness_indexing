@@ -682,6 +682,17 @@
         //  wardInfo[wardName].start_value);
         var indexed = secondRoundIndexed -
           firstRoundIndexed + wardInfo[wardName].start_value;
+
+        // correction for the "Bills Bomb"
+        if (wardName === 'south_mountain') {
+          indexed -= 1489;
+        }
+
+        // correction for Jeff's web indexing
+        if (wardName === 'university') {
+          indexed += 213;
+        }
+
         score = utils.calculateScore(indexed,
           wardInfo[wardName].size_normalization_ratio,
           wardInfo[wardName].start_value);
