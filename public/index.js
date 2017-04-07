@@ -1,6 +1,18 @@
 (function($, d3, firebase) {
   "use strict";
 
+  var displayNameMap = {
+    'south_mountain': 'South Mountain',
+    'university': 'University',
+    'san_marcos': 'San Marcos',
+    'towne_lake': 'Towne Lake',
+    'southshore': 'Southshore',
+    'horizon': 'Horizon',
+    'mcclintock': 'McClintock',
+    'mission_bay': 'Mission Bay',
+    'pioneer': 'Pioneer'
+  };
+
   var allData;
   var aprilData;
   var wardInfo;
@@ -185,11 +197,14 @@
     var tree = treeChart();
     svg.call(tree);
 
-    var stats = d3.select('.leaderboard-march-container').append("div")
+    var stats = d3.select('.leaderboard-march-container').append("div");
     stats.call(statsChart().data(contributorStatsMarch));
 
-    var stats = d3.select('.leaderboard-april-container').append("div")
+    var stats = d3.select('.leaderboard-april-container').append("div");
     stats.call(statsChart().data(contributorStats));
+
+    var wardTotals = d3.select('.ward-totals-container').append("div");
+    wardTotals.call(wardTotalsChart().data(latestEntry));
 
     // line chart
     //var line = d3.select('.chart-container').append("div");
@@ -536,6 +551,55 @@
     return my;
   }
 
+  function wardTotalsChart() {
+    var data;
+
+    function my(selection) {
+      var totals = calculateWardTotals(data);
+
+      var wardTotals = selection.append("div")
+          .attr("class", "ward-totals")
+
+      var table = wardTotals.append("table")
+          .attr("class", "table table-striped ward-totals-table");
+
+      var headerRow = table.append("thead")
+        .append("tr");
+
+      headerRow.append("th")
+          .text("Rank");
+      headerRow.append("th")
+          .text("Ward");
+      headerRow.append("th")
+          .text("Total Indexed Records");
+      
+      var tableBody = table.append("tbody");
+
+      var wards = tableBody.selectAll(".ward-totals__ward")
+          .data(totals)
+        .enter().append("tr")
+          .attr("class", "ward-totals__ward")
+
+      wards.append("td")
+          .text(function(d, i) { return i + 1; });
+
+      wards.append("td")
+          .text(function(d) { return displayNameMap[d.ward_name]; });
+
+      wards.append("td")
+          .text(function(d) { return d.total_records; });
+
+    }
+
+    my.data = function(value) {
+      if (!arguments.length) return data;
+      data = value;
+      return my;
+    }
+
+    return my;
+  }
+
   //function leaderBoardRow() {
   //  function my(selection) {
   //    selection.append("tr")
@@ -552,6 +616,33 @@
 
   function getFirstItem(obj) {
     return obj[Object.keys(obj)];
+  }
+
+  function calculateWardTotals(data) {
+    console.log(data);
+
+    var wards = [];
+    Object.keys(data.units).forEach(function(wardName) {
+
+      if (wardName !== 'full_stake') {
+        console.log(wardName);
+        var indexed = data.units[wardName].indexed;
+        var totalRecords = indexed - wardInfo[wardName].start_value;
+        console.log(totalRecords);
+        wards.push({ ward_name: wardName, total_records: totalRecords });
+      }
+
+    });
+
+    wards.sort(function(a, b) {
+      var aRecs = a.total_records;
+      var bRecs = b.total_records;
+      if (aRecs > bRecs) return -1;
+      if (bRecs > aRecs) return 1;
+      return 0;
+    });
+
+    return wards;
   }
 
   function computeLeaderboard(data) {
