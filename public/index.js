@@ -73,9 +73,26 @@
         .round('second')
         .wardInfo(wardInfo)
         .startDate(new Date("2017-03-27T00:00:00-07:00"))
-        .endDate(new Date());
+        .endDate(new Date("2017-04-03T00:00:00-07:00"));
       lineRound2.call(lc);
       round2ChartExists = true;
+    }
+  });
+
+  var round3ChartExists = false;
+  $('#mainTabs a[href="#chart_round3"]').on('shown.bs.tab', function(e) {
+    if (!round3ChartExists) {
+
+      var lc = lineChart();
+      var lineRound3 = d3.select('.chart-round3-container').append("div");
+      lc
+        .data(allData)
+        .round('third')
+        .wardInfo(wardInfo)
+        .startDate(new Date("2017-04-03T00:00:00-07:00"))
+        .endDate(new Date());
+      lineRound3.call(lc);
+      round3ChartExists = true;
     }
   });
 
@@ -184,8 +201,6 @@
     });
 
     latestEntry = allData[allData.length - 1];
-
-    console.log(allData);
 
     d3.select('.tree-container')
       .node().appendChild(treeXml.documentElement);
@@ -619,16 +634,13 @@
   }
 
   function calculateWardTotals(data) {
-    console.log(data);
 
     var wards = [];
     Object.keys(data.units).forEach(function(wardName) {
 
       if (wardName !== 'full_stake') {
-        console.log(wardName);
         var indexed = data.units[wardName].indexed;
         var totalRecords = indexed - wardInfo[wardName].start_value;
-        console.log(totalRecords);
         wards.push({ ward_name: wardName, total_records: totalRecords });
       }
 

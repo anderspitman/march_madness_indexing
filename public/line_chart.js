@@ -66,18 +66,29 @@ var lineChart = (function(d3) {
               offset = 76;
             }
 
-            // TODO: Very hacky. At least remove the hard coded 2nd round
-            // number...
-            var indexed = d.indexed;
-            if (round === 'second') {
+            // TODO: Very hacky. At least remove the hard coded round
+            // numbers...
+            var round2StartIndex = 278;
+            var round3StartIndex = 870;
 
-              var round2StartIndex = 278;
+            var indexed = d.indexed;
+
+            if (round === 'second') {
               if (i < round2StartIndex) return y(0);
 
               var firstRoundIndexed =
                 data[round2StartIndex].units[d.unit_name].indexed;
-              var indexed = d.indexed -
+              var secondRoundIndexed = d.indexed -
                 firstRoundIndexed + wardInfo[d.unit_name].start_value - offset;
+
+              indexed = secondRoundIndexed;
+            }
+            else if (round === 'third') {
+              if (i < round3StartIndex) return y(0);
+
+              indexed = d.indexed -
+                data[round3StartIndex].units[d.unit_name].indexed +
+                wardInfo[d.unit_name].start_value - offset;
             }
 
             var val = utils.calculateScore(indexed,
@@ -123,6 +134,24 @@ var lineChart = (function(d3) {
             .attr("width", 2)
             .attr("height", height)
             .attr("fill", "red");
+
+        // start of round 3 marker
+        var roundTwoMarker = g.append("g")
+            .attr("class", "round-start-marker")
+
+        roundTwoMarker.append("text")
+            .attr("x", function(d) { return x(new Date("2017-04-03T00:00:00-07:00")); })
+            .attr("y", 0)
+            .attr("text-anchor", "middle")
+            .text("Start of Round 3");
+
+        roundTwoMarker.append("rect")
+            .attr("x", function(d) { return x(new Date("2017-04-03T00:00:00-07:00")); })
+            .attr("y", 0)
+            .attr("width", 2)
+            .attr("height", height)
+            .attr("fill", "red");
+
       }
 
       var legendWards = g.append("g")
