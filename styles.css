@@ -26,6 +26,30 @@ body {
     //background-color: blue;
 }
 
+.ward-first-round rect {
+    fill: #d37108;
+}
+
+.ward-first-round text {
+    fill: #212121;
+}
+
+.ward-second-round rect {
+    fill: #b2a210;
+}
+
+.ward-second-round text {
+    fill: #212121;
+}
+
+.ward-third-round rect {
+    fill: #109b09;
+}
+
+.ward-third-round text {
+    fill: #212121;
+}
+
 .line-chart-svg {
     width: 100%;
     //height: 100%;
