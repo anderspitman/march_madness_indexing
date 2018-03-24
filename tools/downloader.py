@@ -40,7 +40,7 @@ def parse_contributor_row(row):
 
 def parse_group_row(row):
 
-    indexed_index = 2
+    indexed_index = 6
 
     indexed = 0
     if len(row[indexed_index]) > 0:
@@ -49,7 +49,7 @@ def parse_group_row(row):
     return {
         'group_uuid': row[0],
         'indexed': indexed,
-        'group_short_name': row[5],
+        'group_short_name': row[4],
     }
 
 def process_file(out_dir):
@@ -75,8 +75,10 @@ def process_file(out_dir):
 
                 group_uuid = record['group_uuid']
                 if group_uuid not in group_table:
+                    print("adding group: {}".format(record))
                     group_table[group_uuid] = record
                 else:
+                    print("modifying group: {}".format(record))
                     group_table[group_uuid]['indexed'] += record['indexed']
 
             else:
@@ -126,8 +128,9 @@ if __name__ == '__main__':
 
     time_start = time.time()
     while True:
-        download_file()
+        #download_file()
         process_file(out_dir)
+        break
 
         curr_time = time.time()
         elapsed = curr_time - time_start

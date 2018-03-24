@@ -132,49 +132,49 @@ var treeChartModule = (function(d3) {
       var width = 54;
       var height = width;
 
-      var legend = selection.append("g")
-          .attr("class", "bracket-legend")
-          .attr("transform", function(d, i) {
-            return utils.svgTranslateString(500, 500);
-          });
+      //var legend = selection.append("g")
+      //    .attr("class", "bracket-legend")
+      //    .attr("transform", function(d, i) {
+      //      return utils.svgTranslateString(500, 500);
+      //    });
 
-      var group = legend.selectAll(".legend-ward")
-          .data(legendData).enter()
-        .append("g")
-          .attr("class", "legend-ward")
-          .attr("transform", function(d, i) {
-            return utils.svgTranslateString(i*(width+10), 0);
-          });
+      //var group = legend.selectAll(".legend-ward")
+      //    .data(legendData).enter()
+      //  .append("g")
+      //    .attr("class", "legend-ward")
+      //    .attr("transform", function(d, i) {
+      //      return utils.svgTranslateString(i*(width+10), 0);
+      //    });
 
       
-      group.append("rect")
-          .style("fill", function(d, i) {
-            return legendColors[i];
-          })
-          .attr("x", 0)
-          .attr("y", 0)
-          .attr("rx", 5)
-          .attr("ry", 5)
-          .attr("width", width)
-          .attr("height", height);
+      //group.append("rect")
+      //    .style("fill", function(d, i) {
+      //      return legendColors[i];
+      //    })
+      //    .attr("x", 0)
+      //    .attr("y", 0)
+      //    .attr("rx", 5)
+      //    .attr("ry", 5)
+      //    .attr("width", width)
+      //    .attr("height", height);
 
-      group.append("text")
-          .attr("font-size", 16)
-          .attr("font-weight", "bold")
-          .attr("text-anchor", "middle")
-          .attr("x", width / 2)
-          .attr("y", 22)
-          .text(function(d) { 
-            return d;
-          });
+      //group.append("text")
+      //    .attr("font-size", 16)
+      //    .attr("font-weight", "bold")
+      //    .attr("text-anchor", "middle")
+      //    .attr("x", width / 2)
+      //    .attr("y", 22)
+      //    .text(function(d) { 
+      //      return d;
+      //    });
 
-      group.append("text")
-          .attr("font-size", 16)
-          .attr("font-weight", "bold")
-          .attr("text-anchor", "middle")
-          .attr("x", width / 2)
-          .attr("y", 40)
-          .text("Round");
+      //group.append("text")
+      //    .attr("font-size", 16)
+      //    .attr("font-weight", "bold")
+      //    .attr("text-anchor", "middle")
+      //    .attr("x", width / 2)
+      //    .attr("y", 40)
+      //    .text("Round");
     }
 
     return my;

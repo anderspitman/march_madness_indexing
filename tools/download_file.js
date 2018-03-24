@@ -2,13 +2,15 @@ var casper = require('casper').create();
 
 var x = require('casper').selectXPath;
 
+var fromDate = "1%2F1%2F2018";
+var toDate = "1%2F1%2F2019";
+var url = "https://www.familysearch.org/indexing/reports/statistic/groups/74e8852f-dfd0-42a8-bd3d-9bb0ee2e4760/contributor?format=CSV&fromDate="+fromDate+"&includeSubGroupMembers=true&isContributors=true&isDownload=true&isGeneralGroupMembers=true&isNonContributors=true&isSystemAssignedGroupMembers=true&locale=en&notes=&paginateSubgroups=false&range=DAILY&sortDirection=ASCENDING&sortOrderByField=CONTACT_NAME&timeZone=US%2FMountain&toDate="+toDate;
+
 var auth;
 
-downloadStateAprilReport(casper);
-//downloadContributorStatistics(casper);
+downloadStateReport(casper);
 
-
-function downloadStateAprilReport(casper) {
+function downloadStateReport(casper) {
   casper.options.waitTimeout = 60000;
 
   casper.start('https://www.familysearch.org/indexing/groups/74e8852f-dfd0-42a8-bd3d-9bb0ee2e4760/reports');
@@ -30,22 +32,8 @@ function downloadStateAprilReport(casper) {
     this.click(x('//button[@id="login"]'));
   });
 
-  //var reportsSelector = x('//button[contains(@class, "download-button")]');
-  //casper.waitForSelector(reportsSelector, function() {
-  //  //this.click(reportsSelector);
-  //  casper.wait(3000);
-  //});
-
-
-  //var timelineSelector = 'select[name="reports:_id101"]';
-  //casper.waitForSelector(timelineSelector, function() {
-  //  casper.selectOptionByValue(timelineSelector, 'report_type.monthly');
-  //});
-
   sleep(casper, 3000);
 
-  //var monthSelector = x('//select/option[@value="report_period.monthly_april"]');
-  //var formatSelector= x('//select[@ng-model="reportsManager.reportData.format"]');
   var formatSelector = 'select[ng-model="reportsManager.reportData.format"]';
   casper.waitForSelector(formatSelector, function() {
     casper.selectOptionByValue(formatSelector, 'CSV');
@@ -59,12 +47,10 @@ function downloadStateAprilReport(casper) {
     this.click(downloadButtonSelector);
   });
 
-  casper.then(function() {
-    console.log("Saving file");
-    casper.capture('debug_screenshot.png');
-  });
-
-  //generateReport(casper);
+  //casper.then(function() {
+  //  console.log("Saving file");
+  //  casper.capture('debug_screenshot.png');
+  //});
 
   downloadReport(casper, 'data.csv');
 }
@@ -75,46 +61,11 @@ function sleep(casper, millis) {
   });
 }
 
-function downloadContributorStatistics(casper) {
-  var statsSelector = 'select[name="reports:_id98"]';
-  casper.waitForSelector(statsSelector, function() {
-    casper.selectOptionByValue(statsSelector, 'UserStatisticsReport');
-  });
-
-  generateReport(casper);
-  downloadReport(casper, 'contributor_statistics.csv');
-}
-
-function generateReport(casper) {
-  var generateReportSelector = 'input[value="Generate Report"]';
-  casper.waitForSelector(generateReportSelector, function() {
-    this.click(generateReportSelector);
-  });
-}
-
 function downloadReport(casper, filename) {
-  //var downloadReportSelector = x('//a[text()="Download Report"]');
-  //casper.waitForSelector(downloadReportSelector, function() {
-  //  var url = casper.getElementAttribute(downloadReportSelector, 'href');
-  //  this.download(url, filename);
-  //});
-
-var fromDate = "2%2F10%2F2018";
-var toDate = "1%2F1%2F2019";
-var url = "https://www.familysearch.org/indexing/reports/statistic/groups/74e8852f-dfd0-42a8-bd3d-9bb0ee2e4760/contributor?format=CSV&fromDate="+fromDate+"&includeSubGroupMembers=true&isContributors=true&isDownload=true&isGeneralGroupMembers=true&isNonContributors=true&isSystemAssignedGroupMembers=true&locale=en&notes=&paginateSubgroups=false&range=DAILY&sortDirection=ASCENDING&sortOrderByField=CONTACT_NAME&timeZone=US%2FMountain&toDate="+toDate;
-  // NO worky version
-//var url = "https://www.familysearch.org/indexing/reports/statistic/groups/74e8852f-dfd0-42a8-bd3d-9bb0ee2e4760/contributor?format=CSV&fromDate=3/20/2018&includeSubGroupMembers=true&isContributors=true&isDownload=true&isGeneralGroupMembers=true&isNonContributors=true&isSystemAssignedGroupMembers=true&locale=en&notes=&paginateSubgroups=true&range=DAILY&sortDirection=ASCENDING&sortOrderByField=CONTACT_NAME&timeZone=US/Mountain&toDate=3/16/2019";
   casper.then(function() {
     this.download(url, filename);
   });
 }
-
-function selectContributorOption(casper) {
-}
-
-//casper.then(function() {
-//  this.capture('screenshot.png');
-//});
 
 casper.on('error', function(msg,backtrace) {
   console.log(msg);
