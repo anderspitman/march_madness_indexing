@@ -1,4 +1,4 @@
-(function($, d3, firebase) {
+(function($, d3) {
   "use strict";
 
   var TreeChart = treeChartModule.TreeChart;
@@ -47,7 +47,6 @@
       if (error) throw error;
 
       createCharts(latestData, treeXml);
-      //firebaseStuff();
     });
   })
 
@@ -63,4 +62,4 @@
       treeXml: treeXml,
     });
   }
-}($, d3, firebase));
+}($, d3));
