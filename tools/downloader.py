@@ -123,8 +123,8 @@ if __name__ == '__main__':
 
     out_dir = sys.argv[1]
 
-    #period_seconds = 10*60 # 10 minutes
-    period_seconds = 20
+    period_seconds = 10*60 # 10 minutes
+    #period_seconds = 20
 
     time_start = time.time()
     while True:
