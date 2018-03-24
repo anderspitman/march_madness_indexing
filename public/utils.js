@@ -4,8 +4,13 @@ var utils = (function() {
     return Math.floor((recordsIndexed - wardStartValue) * wardHandicap);
   }
 
+  function svgTranslateString(x, y) {
+    return "translate(" + x + "," + y + ")";
+  }
+
   return {
-    calculateScore: calculateScore
+    calculateScore: calculateScore,
+    svgTranslateString: svgTranslateString,
   };
 
 }());

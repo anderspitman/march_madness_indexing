@@ -129,6 +129,7 @@
     .then(function(snapshot) {
 
       wardInfo = snapshot.val();
+      console.log(JSON.stringify(wardInfo));
 
       return db.ref().child('contributors').orderByKey().limitToLast(1).once('value');
     })
@@ -201,6 +202,7 @@
     });
 
     latestEntry = allData[allData.length - 1];
+    console.log(latestEntry);
 
     d3.select('.tree-container')
       .node().appendChild(treeXml.documentElement);

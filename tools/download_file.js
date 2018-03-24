@@ -99,7 +99,11 @@ function downloadReport(casper, filename) {
   //  this.download(url, filename);
   //});
 
-  var url = "https://www.familysearch.org/indexing/reports/statistic/groups/74e8852f-dfd0-42a8-bd3d-9bb0ee2e4760/contributor?format=CSV&fromDate=1/1/2018&includeSubGroupMembers=true&isContributors=true&isDownload=true&isGeneralGroupMembers=true&isNonContributors=true&isSystemAssignedGroupMembers=true&locale=en&notes=&paginateSubgroups=true&range=YEARLY&sortDirection=ASCENDING&sortOrderByField=CONTACT_NAME&timeZone=US/Mountain&toDate=3/16/2018";
+var fromDate = "2%2F10%2F2018";
+var toDate = "1%2F1%2F2019";
+var url = "https://www.familysearch.org/indexing/reports/statistic/groups/74e8852f-dfd0-42a8-bd3d-9bb0ee2e4760/contributor?format=CSV&fromDate="+fromDate+"&includeSubGroupMembers=true&isContributors=true&isDownload=true&isGeneralGroupMembers=true&isNonContributors=true&isSystemAssignedGroupMembers=true&locale=en&notes=&paginateSubgroups=false&range=DAILY&sortDirection=ASCENDING&sortOrderByField=CONTACT_NAME&timeZone=US%2FMountain&toDate="+toDate;
+  // NO worky version
+//var url = "https://www.familysearch.org/indexing/reports/statistic/groups/74e8852f-dfd0-42a8-bd3d-9bb0ee2e4760/contributor?format=CSV&fromDate=3/20/2018&includeSubGroupMembers=true&isContributors=true&isDownload=true&isGeneralGroupMembers=true&isNonContributors=true&isSystemAssignedGroupMembers=true&locale=en&notes=&paginateSubgroups=true&range=DAILY&sortDirection=ASCENDING&sortOrderByField=CONTACT_NAME&timeZone=US/Mountain&toDate=3/16/2019";
   casper.then(function() {
     this.download(url, filename);
   });
@@ -116,9 +120,9 @@ casper.on('error', function(msg,backtrace) {
   console.log(msg);
 });
 
-casper.on('remote.message', function(msg) {
-  this.echo('remote message caught: ' + msg);
-})
+//casper.on('remote.message', function(msg) {
+//  this.echo('remote message caught: ' + msg);
+//})
 
 casper.selectOptionByValue = function(selector, valueToMatch){
     this.evaluate(function(selector, valueToMatch){
