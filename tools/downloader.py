@@ -128,9 +128,8 @@ if __name__ == '__main__':
 
     time_start = time.time()
     while True:
-        #download_file()
+        download_file()
         process_file(out_dir)
-        break
 
         curr_time = time.time()
         elapsed = curr_time - time_start
