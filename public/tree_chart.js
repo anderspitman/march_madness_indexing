@@ -4,35 +4,35 @@ var treeChartModule = (function(d3) {
   var wardInfo = {
     "horizon" : {
       "display_name" : "Horizon",
-      "size_normalization_ratio" : 1.0,
+      "size_normalization_ratio" : 1.572650,
     },
     "mcclintock" : {
       "display_name" : "McClintock",
-      "size_normalization_ratio" : 1.0,
+      "size_normalization_ratio" : 1.063584,
     },
     "mission_bay" : {
       "display_name" : "Mission Bay",
-      "size_normalization_ratio" : 1.0,
+      "size_normalization_ratio" : 1.719626,
     },
     "pioneer" : {
       "display_name" : "Pioneer",
-      "size_normalization_ratio" : 1.0,
+      "size_normalization_ratio" : 1.593074,
     },
     "san_marcos" : {
       "display_name" : "San Marcos",
-      "size_normalization_ratio" : 1.0,
+      "size_normalization_ratio" : 1.030812,
     },
     "south_mountain" : {
       "display_name" : "South Mtn",
-      "size_normalization_ratio" : 1.0,
+      "size_normalization_ratio" : 1.005464,
     },
     "maricopa" : {
       "display_name" : "Maricopa",
-      "size_normalization_ratio" : 1.0,
+      "size_normalization_ratio" : 1.795122,
     },
     "towne_lake" : {
       "display_name" : "Towne Lake",
-      "size_normalization_ratio" : 1.0,
+      "size_normalization_ratio" : 1.005464,
     },
     "university" : {
       "display_name" : "University",
@@ -316,7 +316,7 @@ var treeChartModule = (function(d3) {
   }
 
   function calculateScoreForRound(wardName, round) {
-    return latestEntry[wardName].indexed;
+    return Math.floor(latestEntry[wardName].indexed * wardInfo[wardName].size_normalization_ratio);
   }
 
   return {

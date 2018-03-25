@@ -16,7 +16,7 @@ var leaderboardModule = (function(d3) {
       'university': 'UNIV',
       'san_marcos': 'SANM',
       'towne_lake': 'TNLK',
-      'southshore': 'SOSH',
+      'maricopa': 'COPA',
       'horizon': 'HRZN',
       'mcclintock': 'MCTK',
       'mission_bay': 'MISB',
