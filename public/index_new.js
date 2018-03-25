@@ -165,6 +165,7 @@
 
     Object.keys(data).forEach(function(key) {
       var contributor = data[key];
+      contributor.wardKey = keyMapping[contributor.group_uuid];
       contributorData.push(contributor);
     });
 

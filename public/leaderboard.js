@@ -95,7 +95,7 @@ var leaderboardModule = (function(d3) {
           })
 
       leaders.append("td")
-          .text(function(d) { return shortNameMap[d.ward_name]; });
+          .text(function(d) { return shortNameMap[d.wardKey]; });
 
       leaders.append("td")
           .text(function(d) { return d.indexed; });
