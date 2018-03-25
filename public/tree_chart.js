@@ -47,7 +47,7 @@ var treeChartModule = (function(d3) {
     var data = options.data;
     var treeXml = options.treeXml;
 
-    latestEntry = data;
+    latestEntry = data.round1;
 
     console.log(latestEntry);
 

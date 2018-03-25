@@ -8,9 +8,14 @@ var utils = (function() {
     return "translate(" + x + "," + y + ")";
   }
 
+  function deepCopyObject(obj) {
+    return JSON.parse(JSON.stringify(obj));
+  }
+
   return {
     calculateScore: calculateScore,
     svgTranslateString: svgTranslateString,
+    deepCopyObject: deepCopyObject,
   };
 
 }());
