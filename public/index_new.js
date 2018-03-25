@@ -2,6 +2,7 @@
   "use strict";
 
   var TreeChart = treeChartModule.TreeChart;
+  var Leaderboard = leaderboardModule.Leaderboard;
   var Api = apiModule.Api;
 
   //var keyMapping = {
@@ -28,24 +29,49 @@
     "e1fa9978-8f55-4e5c-88f5-834c822fc30e": 'university',
   };
 
-  var start = '2018-03-24T10';
-  var endRound1 = '2018-03-24T15';
-  var endRound2 = '2018-03-24T20';
-  var endRound3 = '2018-03-24T25';
+  // TODO: change to AZ timezone
+  var start = '2018-03-25T07:00:00.000000';
+  var endRound1 = '2018-04-01T06:59:59.999999';
+  var endRound2 = '2018-04-08T06:59:59.999999';
+  var endRound3 = '2018-04-15T06:59:59.999999';
 
   var api = new Api();
 
-  var baseData;
+  var baseGroupData;
   var groupDataEndRound1;
   var groupDataEndRound2;
   var groupDataEndRound3;
 
-  api.groupData({
-    targetDatetime: start,
+  var baseContributorData;
+  var contributorDataEnd;
+
+  $('#mainTabs a').click(function(e) {
+    e.preventDefault();
+    $(this).tab('show');
+  });
+
+  api.contributorData({
+      targetDatetime: start,
   })
   .then(function(result) {
 
-    baseData = result.data;
+    baseContributorData = result.data;
+
+    return api.contributorData({
+      targetDatetime: endRound3,
+    })
+  })
+  .then(function(result) {
+
+    contributorDataEnd = result.data;
+
+    return api.groupData({
+      targetDatetime: start,
+    })
+  })
+  .then(function(result) {
+
+    baseGroupData = result.data;
 
     return api.groupData({
       targetDatetime: endRound1,
@@ -72,36 +98,51 @@
     groupDataEndRound3 = result.data;
 
     var data = [
-      baseData,
+      baseGroupData,
       groupDataEndRound1,
       groupDataEndRound2,
       groupDataEndRound3,
     ];
 
+    var contributorData = {
+      base: baseContributorData,
+      end: contributorDataEnd,
+    }
+
     d3.xml("assets/tree.svg").mimeType("image/svg+xml").get(function(error, treeXml) {
       if (error) throw error;
 
-      createCharts(data, treeXml);
+      createCharts(data, contributorData, treeXml);
     });
   })
 
 
-  function createCharts(data, treeXml) {
+  function createCharts(data, contributorData, treeXml) {
 
     console.log(data);
 
     var diffed = calculateDifferences(data);
-
     var groupData = {
       round1: transformGroupData(diffed[0]),
       round2: transformGroupData(diffed[1]),
       round3: transformGroupData(diffed[2]),
     };
 
+    var diffedContrib = calculateDifference(
+      contributorData.base.table, contributorData.end.table, 'indexed');
+    var contributorDataTransformed = transformContributorData(diffedContrib);
+
+    console.log(contributorDataTransformed);
+
     var bracket = new TreeChart({
       domElement: document.querySelector('.tree-container'),
       data: groupData,
       treeXml: treeXml,
+    });
+
+    var leaderboard = new Leaderboard({
+      domElement: document.querySelector('.leaderboard-container'),
+      data: contributorDataTransformed,
     });
   }
 
@@ -115,15 +156,25 @@
       groupData[shortKey] = group;
     });
 
-    console.log(groupData);
-
     return groupData;
+  }
+
+  function transformContributorData(data) {
+
+    var contributorData = [];
+
+    Object.keys(data).forEach(function(key) {
+      var contributor = data[key];
+      contributorData.push(contributor);
+    });
+
+    return contributorData;
   }
 
   function calculateDifferences(data) {
 
     var newData = [];
-    var baseData = data[0];
+    var baseGroupData = data[0];
 
     for (let i = 1; i < data.length; i++) {
       var round = data[i];
@@ -147,7 +198,22 @@
       }
     }
 
-    console.log(newData);
+    return newData;
+  }
+
+  function calculateDifference(startData, endData, valueKey) {
+
+    var newData = utils.deepCopyObject(endData);
+
+    for (let key in endData) {
+      var entry = endData[key];
+      var prevEntry = startData[key];
+
+      if (prevEntry) {
+        newData[key][valueKey] = entry[valueKey] - prevEntry[valueKey];
+      }
+    }
+
     return newData;
   }
 

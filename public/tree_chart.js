@@ -49,8 +49,6 @@ var treeChartModule = (function(d3) {
 
     latestEntry = data.round1;
 
-    console.log(latestEntry);
-
     d3.select(domElem)
       .node().appendChild(treeXml.documentElement);
 
@@ -75,12 +73,12 @@ var treeChartModule = (function(d3) {
       [
         { "name": "south_mountain", "x": 291, "y": 31 },
         { "name": "towne_lake", "x": 365, "y": 22 },
-        { "name": "pioneer", "x": 452, "y": 30 }
+        { "name": "mission_bay", "x": 452, "y": 30 }
       ],
       [
-        { "name": "mission_bay", "x": 569, "y": 88 },
+        { "name": "maricopa", "x": 569, "y": 88 },
         { "name": "mcclintock", "x": 650, "y": 62 },
-        { "name": "maricopa", "x": 719, "y": 110 }
+        { "name": "pioneer", "x": 719, "y": 110 }
       ]
     ];
 

@@ -30,4 +30,10 @@ app.get('/group_range', (req, res) => {
   res.json(db.getGroupDataForRange(params))
 })
 
+app.get('/contributor_data', (req, res) => {
+  const params = req.query
+  console.log(params)
+  res.json(db.getContributorData(params))
+})
+
 app.listen(8000, () => console.log('Running'))

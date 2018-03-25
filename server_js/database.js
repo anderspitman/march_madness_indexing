@@ -73,6 +73,34 @@ class Database {
     return results
   }
 
+  // TODO: duplicated code, extract method
+  getContributorData({ targetDatetime }) {
+
+    const filenames = getSortedFilenameList(this._contributorDir)
+
+    let result = {}
+    let bestMatchFilename = null
+
+    // TODO: optimize for early termination
+    for (let filename of filenames) {
+
+      const datetime = this._getContributorDatetime(filename)
+
+      if (datetime <= targetDatetime) {
+        bestMatchFilename = filename
+      }
+      else if (datetime > targetDatetime) {
+        break
+      }
+    }
+
+    if (bestMatchFilename) {
+      result = this._readContributorFile(bestMatchFilename)
+    }
+
+    return result
+  }
+
   _getGroupDatetime(filename) {
       return filename.slice(11).slice(0, -5)
   }
@@ -83,6 +111,14 @@ class Database {
     return this._readFile(p)
   }
 
+  _getContributorDatetime(filename) {
+      return filename.slice(17).slice(0, -5)
+  }
+
+  _readContributorFile(filename) {
+    const p = path.join(this._contributorDir, filename)
+    return this._readFile(p)
+  }
   _readFile(filePath) {
     const data = fs.readFileSync(filePath, 'utf8')
     return JSON.parse(data)

@@ -32,7 +32,21 @@ var apiModule = (function(axios) {
     });
   };
 
+  Api.prototype.contributorData = function(options) {
+
+    var targetDatetime = options.targetDatetime;
+
+    return axios({
+      method: 'get',
+      url: '/contributor_data',
+      params: {
+        targetDatetime: targetDatetime,
+      }
+    });
+  };
+
   return {
     Api: Api,
   };
+
 }(axios));
