@@ -57,9 +57,7 @@ def process_file(out_dir):
         ##reader = csv.DictReader(csv_file)
         reader = csv.reader(csv_file)
 
-        contributor_records = []
-        group_records = []
-
+        contributor_table = {}
         group_table = {}
 
         for row in reader:
@@ -68,10 +66,18 @@ def process_file(out_dir):
                 continue
 
             if is_contributor_row(row):
-                contributor_records.append(parse_contributor_row(row))
+                record = parse_contributor_row(row)
+
+                uuid = record['member_uuid']
+                if uuid not in contributor_table:
+                    print("adding member: {}".format(record))
+                    contributor_table[uuid] = record
+                else:
+                    print("modifying member: {}".format(record))
+                    contributor_table[uuid]['indexed'] += record['indexed']
+
             elif is_group_row(row):
                 record = parse_group_row(row)
-                group_records.append(record)
 
                 group_uuid = record['group_uuid']
                 if group_uuid not in group_table:
@@ -85,8 +91,8 @@ def process_file(out_dir):
                 pass
                 #raise Exception("Invalid row")
 
-        #pprint(contributor_records)
-        pprint(group_table)
+    pprint(group_table)
+    pprint(contributor_table)
 
     timestamp = datetime.utcnow().isoformat()
 
@@ -97,7 +103,7 @@ def process_file(out_dir):
 
     contributor_data = {
         'timestamp_utc': timestamp,
-        'records': contributor_records
+        'table': contributor_table
     }
 
     path = os.path.join(
