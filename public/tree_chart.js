@@ -40,14 +40,14 @@ var treeChartModule = (function(d3) {
     }
   }
 
-  var latestEntry;
+  var allData;
 
   function TreeChart(options) {
     var domElem  = options.domElement;
     var data = options.data;
     var treeXml = options.treeXml;
 
-    latestEntry = data.round1;
+    allData = data;
 
     d3.select(domElem)
       .node().appendChild(treeXml.documentElement);
@@ -84,16 +84,16 @@ var treeChartModule = (function(d3) {
 
     var secondRoundData = [
       [
-        { "name": "", "x": 103, "y": 265 },
-        { "name": "", "x": 63, "y": 335 }
+        { "name": "university", "x": 103, "y": 265 },
+        { "name": "mcclintock", "x": 63, "y": 335 }
       ],
       [
-        { "name": "", "x": 335, "y": 192 },
-        { "name": "", "x": 430, "y": 188 }
+        { "name": "horizon", "x": 335, "y": 192 },
+        { "name": "mission_bay", "x": 430, "y": 188 }
       ],
       [
-        { "name": "", "x": 664, "y": 268 },
-        { "name": "", "x": 576, "y": 209 }
+        { "name": "towne_lake", "x": 664, "y": 268 },
+        { "name": "pioneer", "x": 576, "y": 209 }
       ]
     ];
 
@@ -112,17 +112,17 @@ var treeChartModule = (function(d3) {
       selection.append("g")
           .datum(firstRoundData)
           .attr("class", "first-round")
-          .call(round.round("first"));
+          .call(round.round("first", allData.round1));
 
       selection.append("g")
           .datum(secondRoundData)
           .attr("class", "second-round")
-          .call(round.round("second"));
+          .call(round.round("second", allData.round2));
 
       selection.append("g")
           .datum(thirdRoundData)
           .attr("class", "third-round")
-          .call(round.round("third"));
+          .call(round.round("third", allData.round3));
 
       var legendData = ['1st', '2nd', '3rd'];
       var legendColors = ['#d37108', '#b2a210', '#109b09'];
@@ -182,6 +182,7 @@ var treeChartModule = (function(d3) {
 
     var faceoff = faceoffChart();
     var round;
+    var roundData;
 
     function my(selection) {
 
@@ -189,7 +190,7 @@ var treeChartModule = (function(d3) {
       selection.selectAll('.' + cls)
           .data(function(d) { return d; })
         .enter()
-          .call(faceoff.round(round));
+          .call(faceoff.round(round, roundData));
     }
 
     my.data = function(value) {
@@ -198,9 +199,10 @@ var treeChartModule = (function(d3) {
       return my;
     }
 
-    my.round = function(value) {
+    my.round = function(value, data) {
       if (!arguments.length) return round;
       round = value;
+      roundData = data;
       return my;
     }
 
@@ -211,6 +213,7 @@ var treeChartModule = (function(d3) {
 
     var ward = wardChart();
     var round;
+    var roundData;
 
     function my(selection) {
 
@@ -221,12 +224,13 @@ var treeChartModule = (function(d3) {
         .selectAll(".ward-" + round + "-round")
           .data(function(d) { return d; })
         .enter()
-        .call(ward.round(round));
+        .call(ward.round(round, roundData));
     }
 
-    my.round = function(value) {
+    my.round = function(value, data) {
       if (!arguments.length) return round;
       round = value;
+      roundData = data;
       return my;
     }
 
@@ -236,6 +240,7 @@ var treeChartModule = (function(d3) {
   function wardChart() {
 
     var round;
+    var roundData;
 
     function my(selection) {
       var group = selection.append("g")
@@ -282,8 +287,8 @@ var treeChartModule = (function(d3) {
 
             if (d.name === "") return null;
 
-            if (latestEntry[d.name] !== undefined) {
-              return calculateScoreForRound(d.name, round);
+            if (roundData[d.name] !== undefined) {
+              return calculateScoreForRound(d.name, round, roundData);
             }
             else {
               return "0";
@@ -306,17 +311,18 @@ var treeChartModule = (function(d3) {
 
     }
 
-    my.round = function(value) {
+    my.round = function(value, data) {
       if (!arguments.length) return round;
       round = value;
+      roundData = data;
       return my;
     }
 
     return my;
   }
 
-  function calculateScoreForRound(wardName, round) {
-    return Math.floor(latestEntry[wardName].indexed * wardInfo[wardName].size_normalization_ratio);
+  function calculateScoreForRound(wardName, round, roundData) {
+    return Math.floor(roundData[wardName].indexed * wardInfo[wardName].size_normalization_ratio);
   }
 
   return {
