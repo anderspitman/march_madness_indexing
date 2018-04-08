@@ -17,7 +17,7 @@ def is_header_row(row):
     return row[0] == 'Group UUID'
 
 def is_contributor_row(row):
-    return len(row) == 17
+    return len(row) == 18
 
 def is_group_row(row):
     return len(row) == 9
