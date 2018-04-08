@@ -99,9 +99,9 @@ var treeChartModule = (function(d3) {
 
     var thirdRoundData = [
       [
-        { "name": "", "x": 282, "y": 365 },
-        { "name": "", "x": 364, "y": 323 },
-        { "name": "", "x": 446, "y": 345 }
+        { "name": "university", "x": 282, "y": 365 },
+        { "name": "mission_bay", "x": 364, "y": 323 },
+        { "name": "towne_lake", "x": 446, "y": 345 }
       ]
     ];
 
@@ -125,8 +125,8 @@ var treeChartModule = (function(d3) {
           .call(round.round("third", allData.round3));
 
       var legendData = ['1st', '2nd', '3rd'];
-      //var legendColors = ['#d37108', '#b2a210', '#109b09'];
-      var legendColors = ['#b2a210', '#109b09', '#109b09'];
+      var legendColors = ['#d37108', '#b2a210', '#109b09'];
+      //var legendColors = ['#b2a210', '#109b09', '#109b09'];
 
       var width = 54;
       var height = width;

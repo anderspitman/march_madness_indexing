@@ -27,8 +27,8 @@ body {
 }
 
 .ward-first-round rect {
-    /*fill: #d37108;*/
-    fill: #b2a210;
+    fill: #d37108;
+    /*fill: #b2a210;*/
     /*fill: #109b09;*/
 }
 
@@ -37,8 +37,7 @@ body {
 }
 
 .ward-second-round rect {
-    /*fill: #b2a210;*/
-    fill: #109b09;
+    fill: #b2a210;
 }
 
 .ward-second-round text {
